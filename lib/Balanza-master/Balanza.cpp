@@ -24,6 +24,12 @@ float Balanza::get_peso(int mean){
     return peso;
 }
 
+
+float Balanza::get_volumen(float densidad, int mean){
+    return get_peso(mean)/densidad;
+}
+
+
 void Balanza::print_peso(){
     Serial.print("Peso: ");
     Serial.print(get_peso(1), 2);

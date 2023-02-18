@@ -13,6 +13,9 @@ class Balanza : public HX711
 
     float get_peso(int mean);
 
+    //Densidad en g/mL, Volumen en mL
+    float get_volumen(float densidad, int mean);
+
     void print_peso();
   private:
 };

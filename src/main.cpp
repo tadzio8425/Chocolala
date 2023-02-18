@@ -46,28 +46,26 @@ void setup() {
 
   //Calibración inicial de la pendiente (Tare + scale -> Offset + pendiente)
   balanza.calibrar(pendiente);
-  timer_start = millis(); 
 
   //Inicialización del controlador PID
-  entrada_pid = balanza.get_peso(10);
-  referencia_pid = 200; //Valor a alcanzar en estado estable
+  entrada_pid = balanza.get_volumen(1, 10);
+  referencia_pid = 200; //Valor de volumen a alcanzar en estado estable
   myPID.SetMode(AUTOMATIC);
 
+  timer_start = millis(); 
 }
 
 void loop() {
 
   //Actualización del PID
-  entrada_pid = balanza.get_peso(10);
-  myPID.Compute();
-
+  entrada_pid = balanza.get_volumen(1, 10);
   int timer_actual = millis();
   int tiempo = timer_actual - timer_start;
+  myPID.Compute();
 
-  balanza.print_peso(); //Imprime el peso en el formato: "Peso: yyy g"
-  Serial.print(" g, Tiempo: ");
-  Serial.print(tiempo);
-  Serial.println(" ms");
+  Serial.print(entrada_pid);
+  Serial.print(",");
+  Serial.println(tiempo);
   delay(100);
 }
 
