@@ -49,7 +49,7 @@ void setup() {
 
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
-  referencia_pid = 200; //Valor de volumen a alcanzar en estado estable
+  referencia_pid = 200; //Valor de volumen (mL) a alcanzar en estado estable
   myPID.SetMode(AUTOMATIC);
 
   timer_start = millis(); 
