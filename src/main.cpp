@@ -66,7 +66,7 @@ void loop() {
   int tiempo = timer_actual - timer_start;
   myPID.Compute();
   motoBomba.set_speed(salida_pid);
-  Serial.println(salida_pid);
+  Serial.println(salida_pid); 
 
   Serial.print(entrada_pid);
   Serial.print(",");

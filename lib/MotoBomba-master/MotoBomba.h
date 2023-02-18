@@ -13,6 +13,7 @@ class MotoBomba
   private:
     int _pwm_pin;
     int _duty_cycle;
+    int _pwm_channel;
 };
 
 #endif
