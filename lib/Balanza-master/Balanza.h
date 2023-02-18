@@ -7,7 +7,7 @@
 class Balanza : public HX711
 {
   public:
-    Balanza(int dout, int clk);
+    Balanza(int dout, int clk) : HX711(dout, clk){}
     
     void calibrar(int pendiente);
 

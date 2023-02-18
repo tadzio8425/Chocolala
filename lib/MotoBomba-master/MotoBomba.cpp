@@ -4,18 +4,19 @@
 MotoBomba::MotoBomba(int pwm_pin)
 {
     _pwm_pin = pwm_pin;
+}
 
-    //Variables PWM
-    const int freq = 10000;
-    const int pwmChannel = 0;
-    const int resolution = 8;
-    int dutyCycle = 200;
 
-    ledcSetup(pwmChannel, freq, resolution);
-    ledcAttachPin(pwm_pin, pwmChannel);
-    
-    //Cuando se crea una motobomba su velocidad inicial debe ser 0
-    set_speed(0);
+void MotoBomba::setUp(){
+      //Variables PWM
+      const int freq = 10000;
+      const int pwmChannel = 0;
+      const int resolution = 8;
+      int dutyCycle = 200;
+
+      ledcSetup(pwmChannel, freq, resolution);
+      ledcAttachPin(_pwm_pin, pwmChannel);
+      ledcWrite(_pwm_pin, 0); //Se inicia el ciclo como igual 0 
 }
 
 void MotoBomba::set_speed(int duty_cycle){

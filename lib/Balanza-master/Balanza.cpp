@@ -2,10 +2,6 @@
 #include "HX711.h"
 #include <Balanza.h>
 
-Balanza::Balanza(int dout, int clk)
-{
-}
-
 void Balanza::calibrar(int pendiente){
   Serial.println("~ CALIBRACIÓN DE LA BALANZA ~");
   delay(100);
@@ -19,7 +15,7 @@ void Balanza::calibrar(int pendiente){
 }
 
 float Balanza::get_peso(int mean){
-    int peso = get_units(mean); // Entrega el peso actualment medido en gramos
+    float peso = get_units(mean); // Entrega el peso actualment medido en gramos
       if(peso<0) peso = peso*-1;
     return peso;
 }

@@ -8,6 +8,7 @@ class MotoBomba
   public:
     MotoBomba(int pwm_pin);
     void set_speed(int duty_cycle); //0-255 duty cycle
+    void setUp();
     int get_duty_cycle();
   private:
     int _pwm_pin;

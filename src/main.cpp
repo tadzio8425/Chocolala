@@ -36,7 +36,7 @@ int timer_start;
 void setup() {
 
   //Baudiaje de la comunicación serial
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -46,6 +46,9 @@ void setup() {
 
   //Calibración inicial de la pendiente (Tare + scale -> Offset + pendiente)
   balanza.calibrar(pendiente);
+
+  //Configuración de la motobomba y pwm
+  motoBomba.setUp();
 
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
@@ -62,6 +65,8 @@ void loop() {
   int timer_actual = millis();
   int tiempo = timer_actual - timer_start;
   myPID.Compute();
+  motoBomba.set_speed(salida_pid);
+  Serial.println(salida_pid);
 
   Serial.print(entrada_pid);
   Serial.print(",");
