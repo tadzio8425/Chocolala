@@ -7,7 +7,7 @@ void Balanza::calibrar(int pendiente){
   delay(100);
   Serial.println("No ponga ningun objeto sobre la balanza");
 
-  tare(50);  //El peso actual es considerado "Tara".
+  tare(100);  //El peso actual es considerado "Tara".
   set_scale(pendiente); //Valor de la pendiente de la regresión
 
   Serial.println("¡¡¡LISTO PARA PESAR!!!"); 

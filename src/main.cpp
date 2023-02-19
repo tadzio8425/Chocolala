@@ -9,7 +9,7 @@
 double referencia_pid, entrada_pid, salida_pid;
 
 //Definición del objeto PID así como de las constantes
-double Kp=2, Ki=5, Kd=1;
+double Kp=1.8, Ki=0.05, Kd=0.2;
 PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 
 //Variables - Pines Balanza
@@ -19,11 +19,16 @@ PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
 
+int valor_pasado;
+
 //Variable - calibración
 int pendiente = 627.643083;
 
 //¿Conectar a WiFi y Firebase?
 bool wireless_mode = false;
+
+bool toggle = false;
+
 
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
@@ -53,9 +58,12 @@ void setup() {
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
   referencia_pid = 200; //Valor de volumen (mL) a alcanzar en estado estable
+  myPID.SetOutputLimits(175, 255);
   myPID.SetMode(AUTOMATIC);
 
   timer_start = millis(); 
+
+  valor_pasado = entrada_pid;
 }
 
 void loop() {
@@ -64,9 +72,24 @@ void loop() {
   entrada_pid = balanza.get_volumen(1, 10);
   int timer_actual = millis();
   int tiempo = timer_actual - timer_start;
+
+
+  
+  int valor_actual = entrada_pid;
+
+  if(abs(valor_actual-valor_pasado) < 60){
   myPID.Compute();
-  motoBomba.set_speed(salida_pid);
-  Serial.println(salida_pid); 
+  motoBomba.set_speed(salida_pid);}
+
+  if(toggle){
+    valor_pasado = entrada_pid;
+    toggle = false;
+  }  
+  if(!toggle){
+    toggle = true;
+  }
+
+  Serial.println(salida_pid);
 
   Serial.print(entrada_pid);
   Serial.print(",");
