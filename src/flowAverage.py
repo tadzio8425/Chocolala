@@ -1,7 +1,7 @@
 import statistics as s
 
-duty_cycle = 200
-flow_file = "225.txt"
+duty_cycle = 225
+flow_file = "240.txt"
 lista_flujos = []
 
 def lineSplitter(line: list):

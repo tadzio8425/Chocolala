@@ -1,0 +1,78 @@
+---------------------------
+Especificación del problema
+---------------------------
+
+Problema del morral: 
+
+Entrada: 
+Se recibe por entrada estandar una serie de casos de prueba. Cada caso de prueba está compuesto por tres lineas.
+
+La primera linea contiene dos números n P separados por un espacio en blanco. n es la cantidad de objetos y P es el peso de la maleta
+La segunda linea contiene n números enteros separados por espacio que representan las utilidades de los objetos
+La tercera linea contiene n números enteros separados por espacio que representan los pesos de los objetos
+
+El fin de la entrada se indica con una línea que contiene dos ceros (0 0)
+
+Por ejemplo, la entrada correspondiente al ejemplo visto en clase se ve así:
+
+5 45
+4 6 4 1000 3
+15 35 20 100 5
+
+Salida: Por cada caso de prueba se esperan dos lineas. La primera debe tener los indices de los objetos a llevar y la segunda linea la utilidad máxima.
+Para el ejemplo visto en clase, la salida sería:
+
+0 2 4
+11
+
+--------------------------------------
+Instrucciones para compilar y ejecutar
+--------------------------------------
+
+Para compilar y ejecutar este programa seguir las siguientes instrucciones:
+
+1. Abrir una consola.
+
+2. Ir a la carpeta donde se encuentra el proyecto utilizando el comando cd:
+
+cd C:\Usuarios\jorge\carpeta1\carpeta2\...\KnapsackProblem
+
+3. Crear una carpeta llamada classes y ejecutar el comando javac para compilar, indicando que la salida debe quedar en la carpeta classes:
+
+mkdir classes
+javac -d classes src/*.java
+
+4. Ejecutar el programa, indicando que las clases se encuentran en la carpeta classes:
+
+java -cp classes KnapsackExample
+
+El programa va a quedarse esperando una lista de números de acuerdo con la
+especificación del problema. Cada vez que se provea una lista y se presione
+enter, debe aparecer la respuesta al problema en el formato esperado.
+
+Para pruebas grandes es más cómodo leer un archivo y escribir las respuestas
+en un archivo. Para esto se puede crear un archivo de texto con todos los casos
+de prueba (por ejemplo el archivo Knapsack.in en la carpeta data) y usar la consola de la siguiente forma:
+
+java -cp classes KnapsackExample < data\Knapsack.in > data\Knapsack.out
+
+El símbolo "<" redirige el contenido de "data\Knapsack.in" a la entrada estandar.
+El símbolo ">" redirige la salida estandar al archivo "data\Knapsack.out"
+
+---------------------
+Trabajando en Eclipse
+---------------------
+
+Para usar los archivos compilados por eclipse, se debe ir a la carpeta donde
+eclipse guarda los archivos .class (la carpeta bin):
+
+cd C:\Usuarios\jorge\carpeta1\carpeta2\...\KnapsackProblem\bin
+
+y ejecutar directamente el programa. También se puede ejecutar java desde cualquier
+parte del sistema de archivos utilizando la opción "-cp" para indicar donde están los archivos .class
+
+java -cp "C:\Usuarios\jorge\carpeta1\carpeta2\...\KnapsackProblem\bin" KnapsackExample
+
+Finalmente, utilizando rutas a los archivos se puede ejecutar el programa desde cualquier directorio:
+
+java -cp "C:\Usuarios\jorge\carpeta1\carpeta2\...\KnapsackProblem\bin" KnapsackExample < C:\Usuarios\jorge\carpeta3\carpeta4\...\carpetaN\entrada.in > C:\Usuarios\jorge\carpeta10\carpeta11\...\carpetaM\salida.out

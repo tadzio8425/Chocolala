@@ -9,7 +9,7 @@
 double referencia_pid, entrada_pid, salida_pid;
 
 //Definición del objeto PID así como de las constantes
-double Kp=1.8, Ki=0.05, Kd=0.2;
+double Kp=6, Ki=0.07, Kd=3.2;
 PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 
 //Variables - Pines Balanza
@@ -19,7 +19,7 @@ PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
 
-int valor_pasado;
+float valor_pasado;
 
 //Variable - calibración
 int pendiente = 627.643083;
@@ -49,16 +49,18 @@ void setup() {
     firebaseHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
   }
 
+  //Configuración de la motobomba y pwm
+  motoBomba.setUp();
+  motoBomba.set_speed(0);
+
   //Calibración inicial de la pendiente (Tare + scale -> Offset + pendiente)
   balanza.calibrar(pendiente);
 
-  //Configuración de la motobomba y pwm
-  motoBomba.setUp();
 
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
   referencia_pid = 200; //Valor de volumen (mL) a alcanzar en estado estable
-  myPID.SetOutputLimits(175, 255);
+  myPID.SetOutputLimits(185, 255);
   myPID.SetMode(AUTOMATIC);
 
   timer_start = millis(); 
@@ -75,11 +77,15 @@ void loop() {
 
 
   
-  int valor_actual = entrada_pid;
+  float valor_actual = entrada_pid;
 
-  if(abs(valor_actual-valor_pasado) < 60){
-  myPID.Compute();
-  motoBomba.set_speed(salida_pid);}
+  if(abs(valor_actual-valor_pasado) < 20){
+    myPID.Compute();
+    motoBomba.set_speed(salida_pid);
+    }
+  else{
+    motoBomba.set_speed(0);
+  }
 
   if(toggle){
     valor_pasado = entrada_pid;
@@ -88,8 +94,6 @@ void loop() {
   if(!toggle){
     toggle = true;
   }
-
-  Serial.println(salida_pid);
 
   Serial.print(entrada_pid);
   Serial.print(",");
