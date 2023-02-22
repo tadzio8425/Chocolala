@@ -17,22 +17,22 @@ public class DynamicProgrammingKnapsackAlgorithm implements KnapsackAlgorithm {
 				if(i == 0) {
 					matriz[i][j] = 0;
 				}
-				else if(weights[i] > j){
+				else if(weights[i-1] > j && i>0){
 					matriz[i][j] = matriz[i-1][j];
 				}
-				else {
-					Math.max(matriz[i-1][j], matriz[i-1][j-weights[i-1]]+utilities[i-1]);
+				else if(weights[i-1] <= j && i>0){
+					matriz[i][j] = Math.max(matriz[i-1][j], matriz[i-1][j-weights[i-1]]+utilities[i-1]);
 				}
 			}
 		}
 		
 		
 		// TODO: Step two: traceback to find subset
-		boolean[] answer = new boolean [n];
+		boolean[] answer = new boolean [n - 1];
 		Arrays.fill(answer, false);
 		
-		int i = n;
-		int j = p;
+		int i = n - 1;
+		int j = p - 1;
 		
 		while(i > 0) {
 			if((weights[i-1] <= j) && (matriz[i][j] == matriz[i-1][j-weights[i-1]] + utilities[i-1])) {

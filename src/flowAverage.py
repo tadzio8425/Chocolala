@@ -1,7 +1,7 @@
 import statistics as s
 
 duty_cycle = 225
-flow_file = "240.txt"
+flow_file = "235.txt"
 lista_flujos = []
 
 def lineSplitter(line: list):
@@ -28,7 +28,7 @@ for i in range(len(split_lines)-1):
 flujo_promedio = s.mean(lista_flujos)
 
 print("Con un duty cycle de {}, el flujo promedio fue de {} mL/s.".format(duty_cycle,flujo_promedio))
-
+print(s.stdev(lista_flujos))
 
 
 

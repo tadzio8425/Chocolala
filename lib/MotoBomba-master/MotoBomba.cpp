@@ -9,7 +9,7 @@ MotoBomba::MotoBomba(int pwm_pin)
 
 void MotoBomba::setUp(){
       //Variables PWM
-      const int freq = 10000;
+      const int freq = 30000;
       const int pwmChannel = 0;
       const int resolution = 8;
 

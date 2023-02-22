@@ -29,6 +29,8 @@ bool wireless_mode = false;
 
 bool toggle = false;
 
+bool first_time = true;
+int time_mark;
 
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
@@ -59,7 +61,7 @@ void setup() {
 
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
-  referencia_pid = 200; //Valor de volumen (mL) a alcanzar en estado estable
+  referencia_pid = 100; //Valor de volumen (mL) a alcanzar en estado estable
   myPID.SetOutputLimits(185, 255);
   myPID.SetMode(AUTOMATIC);
 
@@ -80,12 +82,40 @@ void loop() {
   float valor_actual = entrada_pid;
 
   if(abs(valor_actual-valor_pasado) < 20){
-    myPID.Compute();
-    motoBomba.set_speed(salida_pid);
+    if(referencia_pid - entrada_pid > 15){
+      myPID.Compute();
+      motoBomba.set_speed(salida_pid);
     }
+    else{
+
+      if(first_time){
+        time_mark  = millis();
+        first_time = false;
+      }
+      
+
+      if(entrada_pid < referencia_pid){
+        int time_since_mark = (timer_actual - time_mark);
+        if (time_since_mark < 1000){
+            motoBomba.set_speed(255);
+        }
+        else{
+            time_mark = millis();
+            motoBomba.set_speed(190);
+        }
+
+
+        }
+      else{
+        motoBomba.set_speed(0);
+      }
+    }}
   else{
     motoBomba.set_speed(0);
   }
+  
+
+
 
   if(toggle){
     valor_pasado = entrada_pid;
@@ -98,7 +128,7 @@ void loop() {
   Serial.print(entrada_pid);
   Serial.print(",");
   Serial.println(tiempo);
-  delay(100);
+  delay(20);
 }
 
 
