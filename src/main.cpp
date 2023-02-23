@@ -9,7 +9,7 @@
 double referencia_pid, entrada_pid, salida_pid;
 
 //Definición del objeto PID así como de las constantes
-double Kp=6, Ki=0.07, Kd=3.2;
+double Kp=6.1, Ki=0.3, Kd=0.75; //
 PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 
 //Variables - Pines Balanza
@@ -62,7 +62,7 @@ void setup() {
   //Inicialización del controlador PID
   entrada_pid = balanza.get_volumen(1, 10);
   referencia_pid = 100; //Valor de volumen (mL) a alcanzar en estado estable
-  myPID.SetOutputLimits(185, 255);
+  myPID.SetOutputLimits(85, 255);
   myPID.SetMode(AUTOMATIC);
 
   timer_start = millis(); 
@@ -73,7 +73,7 @@ void setup() {
 void loop() {
 
   //Actualización del PID
-  entrada_pid = balanza.get_volumen(1, 10);
+  entrada_pid = balanza.get_volumen(1, 1);
   int timer_actual = millis();
   int tiempo = timer_actual - timer_start;
 
@@ -82,7 +82,7 @@ void loop() {
   float valor_actual = entrada_pid;
 
   if(abs(valor_actual-valor_pasado) < 20){
-    if(referencia_pid - entrada_pid > 15){
+    if(true){
       myPID.Compute();
       motoBomba.set_speed(salida_pid);
     }
