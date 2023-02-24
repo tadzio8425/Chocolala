@@ -9,6 +9,7 @@
 double referencia_pid, entrada_pid, salida_pid;
 
 //Definición del objeto PID así como de las constantes
+
 double Kp=6.1, Ki=0.3, Kd=0.75; //
 PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 
@@ -42,6 +43,7 @@ int timer_start;
 
 void setup() {
 
+
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
 
@@ -60,9 +62,35 @@ void setup() {
 
 
   //Inicialización del controlador PID
-  entrada_pid = balanza.get_volumen(1, 10);
-  referencia_pid = 100; //Valor de volumen (mL) a alcanzar en estado estable
   myPID.SetOutputLimits(85, 255);
+  entrada_pid = balanza.get_volumen(1, 10);
+  referencia_pid = 200; //Valor de volumen (mL) a alcanzar en estado estable
+
+  if(referencia_pid <= 50){
+    myPID.SetTunings(16,3,0.5);
+    myPID.SetOutputLimits(180, 255);
+  }
+  else if(referencia_pid <= 100){
+    myPID.SetTunings(6.1,0.32,0.75);
+  }
+  else if(referencia_pid <= 200){
+    myPID.SetTunings(6.2,0.1,2.69);
+  }
+  else if(referencia_pid <= 300){
+    myPID.SetTunings(6.2,0.1,3.82);
+  }
+  else if(referencia_pid <= 400){
+    myPID.SetTunings(6.2,0.1,4.1);
+  }
+  else if(referencia_pid <=500){
+    myPID.SetTunings(6.2,0.1,6.1);
+  }
+  else if(referencia_pid<=600){
+    myPID.SetTunings(6.2,0.1,7.2);
+  }
+  
+   
+
   myPID.SetMode(AUTOMATIC);
 
   timer_start = millis(); 
@@ -107,11 +135,11 @@ void loop() {
 
         }
       else{
-        motoBomba.set_speed(0);
+        motoBomba.set_speed(85);
       }
     }}
   else{
-    motoBomba.set_speed(0);
+    motoBomba.set_speed(85);
   }
   
 
