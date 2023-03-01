@@ -21,7 +21,7 @@ PID myPID(&entrada_pid, &salida_pid, &referencia_pid, Kp, Ki, Kd, DIRECT);
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
 
-float valor_pasado;
+double valor_pasado;
 
 //Variable - calibración
 int pendiente = 627.643083;
@@ -42,6 +42,28 @@ MotoBomba motoBomba(pump_PWM);
 
 //Aux Vars
 int timer_start;
+int timer_print = 2000;
+int ref_print = 0;
+double last_10_volumes[10];
+int cycle_10 = -1;
+
+
+//Funciones AUX
+void saveLast10(double value, int cycle_10){
+  last_10_volumes[cycle_10] = value; 
+}
+
+double getArrayMean(double* arrayToMean){
+  double len = sizeof(arrayToMean);
+  double sum = 0;
+
+  for(int i = 0; i < len; i++){
+    sum += arrayToMean[i];
+  }
+  return sum/len;
+}
+
+
 
 void setup() {
 
@@ -88,10 +110,18 @@ void setup() {
   valor_pasado = entrada_pid;
 }
 
+
 void loop() {
 
   //Actualización del PID
   entrada_pid = balanza.get_volumen(1, 1);
+
+  if(cycle_10 + 1 >= 10){
+    cycle_10 = -1;
+  }
+    cycle_10 = cycle_10 + 1;
+  saveLast10(entrada_pid, cycle_10);
+
   int timer_actual = millis();
   int tiempo = timer_actual - timer_start;
 
@@ -112,8 +142,6 @@ void loop() {
   else{
     motoBomba.set_speed(0);
   }
-  
-
 
 
   if(toggle){
@@ -129,13 +157,27 @@ else{
 
     
 }
-  Serial.print(entrada_pid);
+
+if(timer_print >= 2000){
+  double last_10_mean = getArrayMean(last_10_volumes);
+  Serial.print(last_10_mean);
   Serial.print(",");
   Serial.println(tiempo);
+
+  ref_print = millis();
+  }
+
+timer_print = millis() - ref_print; 
+
+  
   delay(20);
 
 
 }
+
+
+
+
 
 
 
