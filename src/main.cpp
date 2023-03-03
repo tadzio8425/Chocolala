@@ -88,7 +88,7 @@ void setup() {
   //Inicialización del controlador PID
   myPID.SetOutputLimits(45, 255);
   entrada_pid = balanza.get_volumen(1, 10);
-  referencia_pid = 400; //Valor de volumen (mL) a alcanzar en estado estable
+  referencia_pid = 150; //Valor de volumen (mL) a alcanzar en estado estable
 
   if(referencia_pid<250){
     Kp_prueba=35;
@@ -99,7 +99,7 @@ void setup() {
   else{
     Kp_prueba=6.2;
   }
-  myPID.SetTunings(Kp_prueba,0.1,(1.5/100)*referencia_pid+0.9);
+  myPID.SetTunings(Kp_prueba,0.1,(1.5/100)*referencia_pid);
   
    
 
@@ -131,7 +131,7 @@ void loop() {
   if(abs(valor_actual-valor_pasado) < 20 && !volumen_alcanzado){
 
 
-    if(abs(entrada_pid - referencia_pid) < 0.5 || (entrada_pid - referencia_pid) > 0){
+    if(abs(entrada_pid - referencia_pid) < 0.1 || (entrada_pid - referencia_pid) > 0){
       volumen_alcanzado = true;
     }
 
