@@ -20,11 +20,6 @@ double referencia_volumen = 150; //Valor deseado en mL
 //¿Conectar a WiFi y Firebase?
 bool wireless_mode = false;
 
-
-bool first_time = true;
-int time_mark;
-
-
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
 MotoBomba motoBomba(pump_PWM);
