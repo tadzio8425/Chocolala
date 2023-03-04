@@ -1,4 +1,6 @@
 #include "Arduino.h"
+#include <WiFi.h>
+#include <WiFiClient.h>
 #include <WebServer.h>
 #ifndef FirebaseT_h
 #define FirebaseT_h
@@ -13,7 +15,6 @@ class FirebaseT
     WebServer* getServerPointer();
   private:
     WebServer* _serverPointer;
-    WebServer _server;
 };
 
 #endif

@@ -1,7 +1,9 @@
 #include "Arduino.h"
 #include "FirebaseT.h"
 #include <Firebase_ESP_Client.h>
-#include "WiFi.h"
+
+#include <WiFi.h>
+#include <WiFiClient.h>
 #include <WebServer.h>
 
 //Provide the token generation process info.
@@ -47,8 +49,9 @@ void FirebaseT::setFirebase(char* api_key, char* database_url)
 
 void FirebaseT::setWebServer(int port)
 {
-  WebServer _server(80);
-  _serverPointer = &_server;
+  IPAddress ip(10,13,37,2);
+
+  _serverPointer = new WebServer(ip, port);
 }
 
 
@@ -57,7 +60,7 @@ void FirebaseT::setWebServer(int port)
  *  @param function: Función a llamar cuando se ejecute el GET
  * ***/
 void FirebaseT::addGETtoWeb(String path, void (*function)()){
-  _server.on(path, *function);
+  _serverPointer->on(path, *function);
 }
 
 WebServer* FirebaseT::getServerPointer(){

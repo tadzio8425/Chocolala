@@ -7,6 +7,10 @@
 #include <VolumeController.h>
 #include <ChocolalaREST.h>
 
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+
 using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
@@ -44,7 +48,7 @@ void setup() {
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
     iotHandler.setWiFi("Wokwi-GUEST", "");
-    iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
+    //iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
     iotHandler.setWebServer(80);
     ChocolalaREST::linkServer(iotHandler.getServerPointer());
   }
@@ -61,12 +65,11 @@ void setup() {
   //Vincular el API REST con el servidor WiFi
   iotHandler.addGETtoWeb("/volume", ChocolalaREST::GETVolume);
   iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
-
+  (iotHandler.getServerPointer())->begin();
 }
 
 
 void loop() {
-
   //Actualización obligatoria del controlador
   controladorVolumen.update();
   controladorVolumen.printVolumeMean(2000);
@@ -75,6 +78,8 @@ void loop() {
   ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
   ChocolalaREST::linkWeight((balanza.get_weightPointer()));
 
+
+  (iotHandler.getServerPointer())->handleClient();
 
   delay(20);
 
