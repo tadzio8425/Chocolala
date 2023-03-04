@@ -12,7 +12,8 @@ class FirebaseT
     void addGETtoWeb(String path, void (*function)());
     WebServer* getServerPointer();
   private:
-    WebServer* _serverPointer = NULL;
+    WebServer* _serverPointer;
+    WebServer _server;
 };
 
 #endif
