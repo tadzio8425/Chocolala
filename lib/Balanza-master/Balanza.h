@@ -17,7 +17,12 @@ class Balanza : public HX711
     float get_volumen(float densidad, int mean);
 
     void print_peso();
+
+    float* get_volumenPointer();
+    float* get_weightPointer();
   private:
+    float _volumen_actual; 
+    float _peso_actual;
 };
 
 #endif

@@ -5,6 +5,9 @@
 #include <MotoBomba.h>
 #include <PID_v1.h>
 #include <VolumeController.h>
+#include <ChocolalaREST.h>
+
+using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
 #define DOUT  26
@@ -29,8 +32,9 @@ MotoBomba* motoBombaPointer = &motoBomba;
 
 VolumeController controladorVolumen(balanzaPointer, motoBombaPointer);
 
+FirebaseT iotHandler;
 
-//FirebaseT firebaseHandler;
+
 void setup() {
 
 
@@ -38,18 +42,18 @@ void setup() {
   Serial.begin(115200);
 
   //Modo wireless (WiFi + Firebase)
-  /*if(wireless_mode){
-    firebaseHandler.setWiFi("Chocolala", "eusebio8425");
-    firebaseHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
+  if(wireless_mode){
+    iotHandler.setWiFi("Chocolala", "eusebio8425");
+    iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
+    iotHandler.setWebServer(80);
+    ChocolalaREST::linkServer(iotHandler.getServerPointer());
   }
-*/
+
   //Configuración de la motobomba y pwm
   motoBomba.setUp();
-  motoBomba.set_speed(0);
-
+  
   //Calibración inicial de la pendiente (Tare + scale -> Offset + pendiente)
   balanza.calibrar(pendiente);
-
 
   //Inicialización del controlador PID
   controladorVolumen.setUp(referencia_volumen); //Ref
@@ -58,9 +62,18 @@ void setup() {
 
 void loop() {
 
+  //Actualización obligatoria del controlador
   controladorVolumen.update();
-  delay(20);
 
+  //Vincular variables del backend con el API REST
+  ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
+  ChocolalaREST::linkWeight((balanza.get_weightPointer()));
+
+  //Vincular el API REST con el servidor WiFi
+  iotHandler.addGETtoWeb("/volume", ChocolalaREST::GETVolume);
+  iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
+
+  delay(20);
 
 }
 

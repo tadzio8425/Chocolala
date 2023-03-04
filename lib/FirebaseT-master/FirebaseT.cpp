@@ -2,6 +2,7 @@
 #include "FirebaseT.h"
 #include <Firebase_ESP_Client.h>
 #include "WiFi.h"
+#include <WebServer.h>
 
 //Provide the token generation process info.
 #include "addons/TokenHelper.h"
@@ -22,7 +23,6 @@ void FirebaseT::setWiFi(char* wifi_ssid, char* wifi_password)
 
 void FirebaseT::setFirebase(char* api_key, char* database_url)
 {
-
   FirebaseData fbdo;
   FirebaseAuth auth;
   FirebaseConfig config;
@@ -43,4 +43,23 @@ void FirebaseT::setFirebase(char* api_key, char* database_url)
   
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
+}
+
+void FirebaseT::setWebServer(int port)
+{
+  WebServer _server(port);
+  _serverPointer = &_server;
+}
+
+
+/***Función que agrega un path REST de tipo GET al servidor WEB
+ *  @param path: Debe ser del tipo "\variableName"
+ *  @param function: Función a llamar cuando se ejecute el GET
+ * ***/
+void FirebaseT::addGETtoWeb(String path, void (*function)()){
+  (*_serverPointer).on(path, *function);
+}
+
+WebServer* FirebaseT::getServerPointer(){
+  return _serverPointer;
 }

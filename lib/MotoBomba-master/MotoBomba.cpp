@@ -17,7 +17,7 @@ void MotoBomba::setUp(){
 
       ledcSetup(pwmChannel, freq, resolution);
       ledcAttachPin(_pwm_pin, pwmChannel);
-      ledcWrite(pwmChannel, 0); //Se inicia el ciclo como igual 0 
+      set_speed(0);
 }
 
 void MotoBomba::set_speed(int duty_cycle){

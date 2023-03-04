@@ -52,7 +52,7 @@ void VolumeController::setUp(double ref){
 void VolumeController::update(){
   //Actualización del PID
   _entrada_pid = (*_balanzaPointer).get_volumen(1, 1);
-
+  updateLast10Volumes();
 
 
   int timer_actual = millis();
@@ -102,8 +102,8 @@ void VolumeController::updateLast10Volumes(){
     _last_10_volumes[_cycle_10] = _entrada_pid; 
 }
 
-void VolumeController::printVolumeMean(){
-if(_timer_print >= 2000){
+void VolumeController::printVolumeMean(int print_interval){
+if(_timer_print >= print_interval){
   double last_10_mean = getArrayMean(_last_10_volumes);
   Serial.print(last_10_mean);
   Serial.print(",");
