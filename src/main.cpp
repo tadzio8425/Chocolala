@@ -49,7 +49,7 @@ void setup() {
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
   referenciaPointer = &default_ref; 
-  bool* waterFillPointer = &defaultFill;
+  waterFillPointer = &defaultFill;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -96,7 +96,7 @@ void loop() {
   if(*waterFillPointer){
     controladorVolumen.update();
   }
-
+  
   controladorVolumen.printVolumeMean(2000);
 
   (iotHandler.getServerPointer())->handleClient();
