@@ -22,7 +22,8 @@ int pump_PWM = 14;
 
 //Variable - calibración
 int pendiente = 627.643083;
-double referencia_volumen = 150; //Valor deseado en mL
+double* referenciaPointer; //Valor deseado en mL
+double default_ref = 150; //Referencia default (mL)
 
 //¿Conectar a WiFi y Firebase?
 bool wireless_mode = true;
@@ -41,9 +42,9 @@ FirebaseT iotHandler;
 
 void setup() {
 
-
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
+  referenciaPointer = &default_ref; 
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -60,12 +61,24 @@ void setup() {
   balanza.calibrar(pendiente);
 
   //Inicialización del controlador PID
-  controladorVolumen.setUp(referencia_volumen); //Ref
+  controladorVolumen.setUp(referenciaPointer); //Ref
+  
+  //Vincular los apuntadores a las variables del backend con el API REST
+  ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
+  ChocolalaREST::linkWeight((balanza.get_weightPointer()));
+  ChocolalaREST::linkReference((referenciaPointer));
 
   //Vincular el API REST con el servidor WiFi
+
+  //GET
   iotHandler.addGETtoWeb("/volume", ChocolalaREST::GETVolume);
   iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
+  iotHandler.addGETtoWeb("/reference", ChocolalaREST::GETReference);
   iotHandler.addGETtoWeb("/", ChocolalaREST::GETAll);
+
+  //PUT
+  iotHandler.addPUTtoWeb("/reference", ChocolalaREST::PUTReference);
+
   (iotHandler.getServerPointer())->begin();
 }
 
@@ -75,9 +88,6 @@ void loop() {
   controladorVolumen.update();
   controladorVolumen.printVolumeMean(2000);
 
-  //Vincular variables del backend con el API REST
-  ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
-  ChocolalaREST::linkWeight((balanza.get_weightPointer()));
 
 
   (iotHandler.getServerPointer())->handleClient();

@@ -60,7 +60,11 @@ void FirebaseT::setWebServer(int port)
  *  @param function: Función a llamar cuando se ejecute el GET
  * ***/
 void FirebaseT::addGETtoWeb(String path, void (*function)()){
-  _serverPointer->on(path, *function);
+  _serverPointer->on(path, HTTP_GET, *function);
+}
+
+void FirebaseT::addPUTtoWeb(String path, void (*function)()){
+  _serverPointer->on(path, HTTP_PUT, *function);
 }
 
 WebServer* FirebaseT::getServerPointer(){

@@ -22,6 +22,7 @@ namespace ChocolalaREST{
   WebServer* _serverPointer;
   float* _volumePointer;
   float* _weightPointer;
+  double* _referencePointer;
 
   void add_json_object(char *tag, float value, char *unit) {
     JsonObject obj = jsonDocument.createNestedObject();
@@ -33,6 +34,8 @@ namespace ChocolalaREST{
   void linkServer(WebServer* serverPointer){
       _serverPointer = serverPointer;
   }
+
+  //MÉTODOS GET
 
   void GETVolume(){
     Serial.println("Get volume");
@@ -46,14 +49,39 @@ namespace ChocolalaREST{
     (*_serverPointer).send(200, "application/json", buffer);
   }
 
+    void GETReference(){
+    Serial.println("Get reference");
+    create_json("reference", (*_referencePointer), "mL");
+    (*_serverPointer).send(200, "application/json", buffer);
+  }
+
   void GETAll(){
     jsonDocument.clear();
     Serial.println("Get all");
+    add_json_object("reference", (*_referencePointer), "mL");
     add_json_object("volume", (*_volumePointer), "mL"); 
     add_json_object("weight", (*_weightPointer), "g");
     serializeJson(jsonDocument, buffer); 
     (*_serverPointer).send(200, "application/json", buffer);
   }
+
+
+  //MÉTODOS PUT
+  void PUTReference(){
+    if ((*_serverPointer).hasArg("plain") == false) {
+      Serial.println("Esperaba una referencia, recibí: nada.");
+    }
+      String body = (*_serverPointer).arg("plain");
+      deserializeJson(jsonDocument, body);
+      
+      //Obtener referencia
+      (*_referencePointer) = (double) jsonDocument["reference"];
+    
+      //Se responde con la nueva referencia
+      GETReference();
+  }
+
+
 
   void linkVolume(float* volumePointer){
       _volumePointer = volumePointer;
@@ -62,5 +90,9 @@ namespace ChocolalaREST{
 
   void linkWeight(float* weightPointer){
       _weightPointer = weightPointer;
+  }
+
+  void linkReference(double* referencePointer){
+      _referencePointer = referencePointer;
   }
 }

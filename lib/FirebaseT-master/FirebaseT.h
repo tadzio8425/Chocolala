@@ -12,6 +12,7 @@ class FirebaseT
     void setFirebase(char* api_key, char* database_url);
     void setWebServer(int port);
     void addGETtoWeb(String path, void (*function)());
+    void addPUTtoWeb(String path, void (*function)());
     WebServer* getServerPointer();
   private:
     WebServer* _serverPointer;
