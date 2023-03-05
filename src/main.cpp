@@ -28,6 +28,10 @@ double default_ref = 150; //Referencia default (mL)
 //¿Conectar a WiFi y Firebase?
 bool wireless_mode = true;
 
+//¿Iniciar el proceso de vertir el agua?
+bool* waterFillPointer;
+bool defaultFill  = false;
+
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
 MotoBomba motoBomba(pump_PWM);
@@ -45,6 +49,7 @@ void setup() {
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
   referenciaPointer = &default_ref; 
+  bool* waterFillPointer = &defaultFill;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -67,6 +72,7 @@ void setup() {
   ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
   ChocolalaREST::linkWeight((balanza.get_weightPointer()));
   ChocolalaREST::linkReference((referenciaPointer));
+  ChocolalaREST::linkWaterFill((waterFillPointer));
 
   //Vincular el API REST con el servidor WiFi
 
@@ -74,10 +80,12 @@ void setup() {
   iotHandler.addGETtoWeb("/volume", ChocolalaREST::GETVolume);
   iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
   iotHandler.addGETtoWeb("/reference", ChocolalaREST::GETReference);
+  iotHandler.addGETtoWeb("/waterFill", ChocolalaREST::GETWaterFill);
   iotHandler.addGETtoWeb("/", ChocolalaREST::GETAll);
 
   //PUT
   iotHandler.addPUTtoWeb("/reference", ChocolalaREST::PUTReference);
+  iotHandler.addPUTtoWeb("/waterFill", ChocolalaREST::PUTWaterFill);
 
   (iotHandler.getServerPointer())->begin();
 }
@@ -85,10 +93,11 @@ void setup() {
 
 void loop() {
   //Actualización obligatoria del controlador
-  controladorVolumen.update();
+  if(*waterFillPointer){
+    controladorVolumen.update();
+  }
+
   controladorVolumen.printVolumeMean(2000);
-
-
 
   (iotHandler.getServerPointer())->handleClient();
 
