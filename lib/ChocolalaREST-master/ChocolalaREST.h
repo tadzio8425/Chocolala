@@ -46,6 +46,15 @@ namespace ChocolalaREST{
     (*_serverPointer).send(200, "application/json", buffer);
   }
 
+  void GETAll(){
+    jsonDocument.clear();
+    Serial.println("Get all");
+    add_json_object("volume", (*_volumePointer), "mL"); 
+    add_json_object("weight", (*_weightPointer), "g");
+    serializeJson(jsonDocument, buffer); 
+    (*_serverPointer).send(200, "application/json", buffer);
+  }
+
   void linkVolume(float* volumePointer){
       _volumePointer = volumePointer;
   }

@@ -65,6 +65,7 @@ void setup() {
   //Vincular el API REST con el servidor WiFi
   iotHandler.addGETtoWeb("/volume", ChocolalaREST::GETVolume);
   iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
+  iotHandler.addGETtoWeb("/", ChocolalaREST::GETAll);
   (iotHandler.getServerPointer())->begin();
 }
 
