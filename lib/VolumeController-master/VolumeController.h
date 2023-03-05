@@ -19,9 +19,9 @@ class VolumeController
     double _Kp_prueba;
     double _referencia_pid, _entrada_pid, _salida_pid;
     
-    PID *_myPIDPointer = NULL;
-    Balanza *_balanzaPointer = NULL;
-    MotoBomba *_motoBombaPointer = NULL;
+    PID *_myPIDPointer;
+    Balanza *_balanzaPointer;
+    MotoBomba *_motoBombaPointer;
 
     int _timer_start;
     double _valor_pasado;

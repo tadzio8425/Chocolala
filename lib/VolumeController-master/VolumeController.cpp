@@ -18,8 +18,7 @@ double getArrayMean(double* arrayToMean){
 
 VolumeController::VolumeController(Balanza* balanzaPointer, MotoBomba* motoBombaPointer)
 {
-    PID _myPID(&_entrada_pid, &_salida_pid, &_referencia_pid, _Kp, _Ki, _Kd, DIRECT);
-    _myPIDPointer = &_myPID;
+    _myPIDPointer = new PID(&_entrada_pid, &_salida_pid, &_referencia_pid, _Kp, _Ki, _Kd, DIRECT);
 
     _balanzaPointer = balanzaPointer;
     _motoBombaPointer = motoBombaPointer;
