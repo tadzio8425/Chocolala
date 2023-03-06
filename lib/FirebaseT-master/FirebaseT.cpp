@@ -22,6 +22,11 @@ void FirebaseT::setWiFi(char* wifi_ssid, char* wifi_password)
   WiFi.softAP(wifi_ssid, wifi_password);
   WiFi.softAPConfig(local_ip, gateway, subnet);
   delay(100);
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+
 }
 
 void FirebaseT::setFirebase(char* api_key, char* database_url)
