@@ -13,14 +13,15 @@
 
 void FirebaseT::setWiFi(char* wifi_ssid, char* wifi_password)
 {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(wifi_ssid, wifi_password);
-  Serial.print("Connecting to WiFi ..");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print('.');
-    delay(1000);
-  }
-  Serial.println(WiFi.localIP());
+
+  /* Put IP Address details */
+  IPAddress local_ip(192,168,1,1);
+  IPAddress gateway(192,168,1,1);
+  IPAddress subnet(255,255,255,0);
+
+  WiFi.softAP(wifi_ssid, wifi_password);
+  WiFi.softAPConfig(local_ip, gateway, subnet);
+  delay(100);
 }
 
 void FirebaseT::setFirebase(char* api_key, char* database_url)
@@ -49,9 +50,7 @@ void FirebaseT::setFirebase(char* api_key, char* database_url)
 
 void FirebaseT::setWebServer(int port)
 {
-  IPAddress ip(10,13,37,2);
-
-  _serverPointer = new WebServer(ip, port);
+  _serverPointer = new WebServer(port);
 }
 
 
