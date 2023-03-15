@@ -24,10 +24,14 @@ VolumeController::VolumeController(Balanza* balanzaPointer, MotoBomba* motoBomba
     _motoBombaPointer = motoBombaPointer;
 }
 
-void VolumeController::setUp(double* refPointer){
+void VolumeController::setReference(double* refPointer){
+  _referencia_pid = (*refPointer); //Valor de volumen (mL) a alcanzar en estado estable  
+}
+
+void VolumeController::setUp(){
   (*_myPIDPointer).SetOutputLimits(45, 255);
   _entrada_pid = (*_balanzaPointer).get_volumen(1, 10);
-  _referencia_pid = (*refPointer); //Valor de volumen (mL) a alcanzar en estado estable
+
 
   if(_referencia_pid<250){
     _Kp_prueba=35;

@@ -9,10 +9,11 @@ class VolumeController
 {
   public:
     VolumeController(Balanza* balanzaPointer, MotoBomba* motoBombaPointer);
-    void setUp(double* ref);
+    void setUp();
     void update();
     void updateLast10Volumes();
     void printVolumeMean(int print_interval);
+    void setReference(double* refPointer);
 
   private:
     double _Kp, _Ki, _Kd;

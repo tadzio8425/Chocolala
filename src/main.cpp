@@ -66,7 +66,8 @@ void setup() {
   balanza.calibrar(pendiente);
 
   //Inicialización del controlador PID
-  controladorVolumen.setUp(referenciaPointer); //Ref
+  controladorVolumen.setReference(referenciaPointer);
+  controladorVolumen.setUp(); //Ref
   
   //Vincular los apuntadores a las variables del backend con el API REST
   ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
@@ -95,6 +96,7 @@ void loop() {
   //Actualización obligatoria del controlador
   if(*waterFillPointer){
     controladorVolumen.update();
+    controladorVolumen.setReference(referenciaPointer);
   }
   
   controladorVolumen.printVolumeMean(2000);
