@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.0.2",
     "expo": "^48.0.7",
     "expo-font": "~11.1.1",
+    "expo-image": "~1.0.0",
     "expo-linking": "~4.0.1",
     "expo-router": "^1.0.0-rc5",
     "expo-splash-screen": "~0.18.1",
