@@ -8,7 +8,7 @@
 class FirebaseT
 {
   public:
-    void setWiFi(char* wifi_ssid, char* wifi_password);
+    void setWiFi(char* wifi_ssid, char* wifi_password, bool wokwi);
     void setFirebase(char* api_key, char* database_url);
     void setWebServer(int port);
     void addGETtoWeb(String path, void (*function)());

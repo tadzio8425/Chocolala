@@ -11,21 +11,33 @@
 //Provide the RTDB payload printing info and other helper functions.
 #include "addons/RTDBHelper.h"
 
-void FirebaseT::setWiFi(char* wifi_ssid, char* wifi_password)
+void FirebaseT::setWiFi(char* wifi_ssid, char* wifi_password, bool wokwi)
 {
 
-  /* Put IP Address details */
-  IPAddress local_ip(192,168,1,1);
-  IPAddress gateway(192,168,1,1);
-  IPAddress subnet(255,255,255,0);
+  if (!wokwi){
+    /* Put IP Address details */
+    IPAddress local_ip(192,168,1,1);
+    IPAddress gateway(192,168,1,1);
+    IPAddress subnet(255,255,255,0);
 
-  WiFi.softAP(wifi_ssid, wifi_password);
-  WiFi.softAPConfig(local_ip, gateway, subnet);
-  delay(100);
+    WiFi.softAP(wifi_ssid, wifi_password);
+    WiFi.softAPConfig(local_ip, gateway, subnet);
+    delay(100);
 
-  IPAddress IP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(IP);
+    IPAddress IP = WiFi.softAPIP();
+    Serial.print("AP IP address: ");
+    Serial.println(IP);
+  }
+
+  else{
+    Serial.print("Connecting to WiFi");
+    WiFi.begin("Wokwi-GUEST", "", 6);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(100);
+      Serial.print(".");
+    }
+    Serial.println(" Connected!");
+  }
 
 }
 

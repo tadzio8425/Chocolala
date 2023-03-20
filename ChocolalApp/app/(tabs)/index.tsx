@@ -48,7 +48,11 @@ export default function TabOneScreen() {
      }}
 
      onPressOut = {() => {
-      setSelected(!selected);
+      setSelected(!selected);      
+      connectToESP32();
+      
+       
+      
    }}
      
      style={selected ? styles.unpressedButton: styles.pressedButton}
@@ -127,8 +131,11 @@ const styles = StyleSheet.create({
   }
 });
 
-let myAdd = function (x: number, y: number): void {
-
+const  connectToESP32 = () => {
+  return fetch('http://192.168.1.1/')
+    .then(response => {return response.ok})
+    .catch(error => {
+      console.error(error);
+    });
 };
-
 
