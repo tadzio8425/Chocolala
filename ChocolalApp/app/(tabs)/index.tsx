@@ -8,6 +8,8 @@ import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
 
+const ESP32IP = 'http://192.168.1.4:8181/';
+
 export default function TabOneScreen() {
 
   const [selected, setSelected] = useState(false);
@@ -132,10 +134,35 @@ const styles = StyleSheet.create({
 });
 
 const  connectToESP32 = () => {
-  return fetch('http://192.168.1.1/')
-    .then(response => {return response.ok})
-    .catch(error => {
+    //GET request
+    fetchWithTimeout(ESP32IP, {
+      method: 'GET',
+      timeout:1000
+    })
+    .then((response) => {  
+      //Success
+        if (response.ok){
+        alert('¡Conexión exitosa!');
+        }
+        console.log(response.status);
+    })
+    //If response is not in json then in error
+    .catch((error) => {
+      //Error
+      alert('No se ha podido conectar al dispositivo.');
       console.error(error);
     });
 };
 
+async function fetchWithTimeout(resource: RequestInfo, options:any = {}) {
+  const {timeout = 8000 } = options;
+  
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  const response = await fetch(resource, {
+    ...options,
+    signal: controller.signal  
+  });
+  clearTimeout(id);
+  return response;
+}

@@ -68,6 +68,7 @@ void FirebaseT::setFirebase(char* api_key, char* database_url)
 void FirebaseT::setWebServer(int port)
 {
   _serverPointer = new WebServer(port);
+  _serverPointer->enableCORS();
 }
 
 
