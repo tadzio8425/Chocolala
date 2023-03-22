@@ -1,9 +1,8 @@
 import { StyleSheet, View, Image, Pressable, Alert} from 'react-native';
 import { useCallback, useState } from 'react';
-import EditScreenInfo from '../../components/EditScreenInfo';
-import { Text} from '../../components/Themed';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+
 
 
 SplashScreen.preventAutoHideAsync();
@@ -154,6 +153,9 @@ const  connectToESP32 = () => {
     });
 };
 
+
+
+
 async function fetchWithTimeout(resource: RequestInfo, options:any = {}) {
   const {timeout = 8000 } = options;
   
@@ -166,3 +168,7 @@ async function fetchWithTimeout(resource: RequestInfo, options:any = {}) {
   clearTimeout(id);
   return response;
 }
+
+
+
+
