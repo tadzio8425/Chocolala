@@ -5,7 +5,7 @@ import useFonts from './hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const ESP32IP = 'http://192.168.1.4:8181/';
+export const ESP32IP = 'http://192.168.1.4:8181';
 
 
 export default function Index({navigation}){

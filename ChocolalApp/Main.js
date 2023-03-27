@@ -1,16 +1,44 @@
-import { StyleSheet, View, Image, Pressable, Alert, Text} from 'react-native';
+import { StyleSheet, View, Image, Pressable, Alert, Text, TouchableOpacity, handlePress} from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import AppLoading from "expo-app-loading";
 import useFonts from './hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Dialog from "react-native-dialog";
+import DialogInput from 'react-native-dialog/lib/Input';
+import {ESP32IP} from "./Index";
 
-const ESP32IP = 'http://192.168.1.4:8181';
-
+var setteable_reference = 0;
 
 export default function Main({navigation}) {
+  const [visibleRefDia, setVisibleRefDia] = useState(false);
+
+  const showRefDialog = () => {
+    setVisibleRefDia(true);
+  };
+
+  const handleRefCancel = () =>{
+    setVisibleRefDia(false);
+  };
+
+  const handleRefOk = () =>{
+  
+    //PUT REQUEST PARA CAMBIAR LA REFERENCIA
+    fetchWithTimeout(`${ESP32IP}/reference`, {
+      method: 'PUT',
+      timeout:1000,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reference:setteable_reference})
+    })
+  
+    setVisibleRefDia(false);
+
+  
+  };
+
   const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState(true);
+  const [referenceJSON, setReference] = useState(true);
 
   const loadData = useCallback(async () => {
     try {
@@ -18,6 +46,7 @@ export default function Main({navigation}) {
       const dataJSON = await response.json();
       setData(dataJSON);
       setWeight(dataJSON[3]);
+      setReference(dataJSON[0]);
     } catch (error) {
       console.log(error);
     }
@@ -44,13 +73,55 @@ export default function Main({navigation}) {
         <Text style={[styles.variableText, {marginLeft: "5%"}]}>Temperatura</Text>
         <TextBox text="yyy" units="°C"></TextBox>
       </View>
+
+      
+
+      <View style={styles.chocoContainer}>
+      <TouchableOpacity onPress={handlePress}>
+          <Image style = {{width:340, height:121}} source={require("./assets/images/balanza.png")}/>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={{zIndex:5}} onPress={showRefDialog}>
+          <Image style = {{width:270, height:248,  marginLeft:38}} source={require("./assets/images/chocolatera.png")}/>
+          <ChocoTextBox text={referenceJSON["value"].toFixed(2)} units={referenceJSON["unit"]}></ChocoTextBox>
+      </TouchableOpacity>
+      <TouchableOpacity  onPress={handlePress}>
+          <Image style = {{width:236, height:194, position:"absolute", right:-30, bottom:-30, zIndex:1}} source={require("./assets/images/batidora_mangotext.png")}/>
+      </TouchableOpacity>
+      </View>
+
+      <View style={styles.bottomContainer}>
+      <TouchableOpacity onPress={handlePress}>
+          <Image style = {{width:61, height:61}} source={require("./assets/images/offButton.png")}/>
+      </TouchableOpacity>
+      </View>
+
+    
+    <Dialog.Container visible={visibleRefDia}>
+      <Dialog.Title>Dosificar</Dialog.Title>
+      <Dialog.Description>
+          Ingrese el valor a dosificar en mL:
+        </Dialog.Description>
+      <DialogInput keyboardType="numeric" onChangeText={ (inputText) => {setteable_reference = inputText.replace(",",".")} }></DialogInput>
+      <Dialog.Button label="Cancel" onPress={handleRefCancel}/>
+        <Dialog.Button label="OK" onPress={handleRefOk}/>
+    </Dialog.Container>
     </View>
+
+
   );
 }
 
 
 const TextBox = ({text, units}) => (
   <View style = {styles.textBox}>
+    <Text style={styles.numberText}>{text} {units}</Text>
+  </View>
+)
+
+const ChocoTextBox = ({text, units}) => (
+  <View style = {[styles.textBox,{zIndex:10, position:"absolute", marginTop:150, marginLeft:130,
+  backgroundColor:"white"}]}>
     <Text style={styles.numberText}>{text} {units}</Text>
   </View>
 )
@@ -106,6 +177,8 @@ const styles = StyleSheet.create({
       marginLeft:"2%",
       textAlign:"center"
     },
+
+
   
   
     unpressedButton:{
@@ -147,6 +220,31 @@ const styles = StyleSheet.create({
       marginTop:"10%",
       marginLeft:"7%",
       alignItems:"center"
+    },
+
+    chocoContainer:{
+      flex: 1,
+      flexDirection: 'column-reverse',
+      flexWrap: 'wrap',
+      width:"100%",
+      marginTop:"10%",
+      marginLeft:"7%",
+      alignItems:"center",
+      width:"100%",
+      alignContent:"flex-start",
+      justifyContent:"flex-start"
+    },
+
+    bottomContainer:{
+      flex: 1,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      width:"100%",
+      maxHeight:60,
+      marginTop:"10%",
+      marginLeft:"7%",
+      alignItems:"center",
+      marginBottom:20
     },
 
     variableText:{

@@ -23,7 +23,7 @@ int pump_PWM = 14;
 //Variable - calibración
 int pendiente = 627.643083;
 double* referenciaPointer; //Valor deseado en mL
-double default_ref = 150; //Referencia default (mL)
+double default_ref = 0; //Referencia default (mL)
 
 //¿Conectar a WiFi y Firebase?
 bool wireless_mode = true;
