@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, Pressable, Alert, Text, TouchableOpacity, handlePress} from 'react-native';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, componentDidMount } from 'react';
 import AppLoading from "expo-app-loading";
 import useFonts from './hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Dialog from "react-native-dialog";
 import DialogInput from 'react-native-dialog/lib/Input';
 import {ESP32IP} from "./Index";
+
 
 var setteable_reference = 0;
 
@@ -33,12 +34,11 @@ export default function Main({navigation}) {
   
     setVisibleRefDia(false);
 
-  
   };
 
   const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState(true);
-  const [referenceJSON, setReference] = useState(true);
+  const [referenceJSON, setReference] = useState({"value":0});
 
   const loadData = useCallback(async () => {
     try {
@@ -56,6 +56,13 @@ export default function Main({navigation}) {
     const interval = setInterval(loadData, 1000);
     return () => clearInterval(interval);
   }, [loadData]);
+
+
+
+
+
+
+
 
   return (
     <View style={styles.container}>
