@@ -1,25 +1,35 @@
-import { StyleSheet, View, Image, Pressable, Alert, Text} from 'react-native';
-import { useCallback, useState } from 'react';
-import AppLoading from "expo-app-loading";
-import useFonts from './hooks/useFonts';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, View, Image, Pressable, Text, TouchableOpacity} from 'react-native';
+import {useState } from 'react';
+import Dialog from "react-native-dialog";
+import DialogInput from 'react-native-dialog/lib/Input';
 
-export const ESP32IP = 'http://192.168.1.35:8181';
+
+export let ESP32IP = 'http://192.168.1.35:8181';
 
 
 export default function Index({navigation}){
     const [selected, setSelected] = useState(false);
+    const [visibleIPSetter, setVisibleIPSetter] = useState(false);
+
+    const handleOKIP = () =>{
+      setVisibleIPSetter(false);
+    }
+
+    const setIP = () =>{
+      setVisibleIPSetter(true);
+    }
+
     return(
         
     <View style={styles.container}>
-    <View style={{width:121, height:121}}>
-      
-    <Image
-      style={styles.image}
+
+    <TouchableOpacity style={{width:121, height:121}} onPress={setIP}>
+    <Image 
+      style={styles.image} 
       source={require("./assets/images/hot-chocolate.png")}
     />
-    </View>
+    </TouchableOpacity>
+
 
     <Text style={styles.title}>Chocolala</Text>
 
@@ -43,7 +53,19 @@ export default function Index({navigation}){
 
     </Pressable>
 
+
+    <Dialog.Container visible={visibleIPSetter}>
+      <Dialog.Title>IP</Dialog.Title>
+      <Dialog.Description>
+          Ingrese la IP de la chocolatera:
+        </Dialog.Description>
+      <DialogInput onChangeText={ (inputText) => ESP32IP = `http://${inputText}`}></DialogInput>
+        <Dialog.Button label="OK" onPress={handleOKIP}/>
+    </Dialog.Container>
+
   </View>
+
+  
     );
 }
 
