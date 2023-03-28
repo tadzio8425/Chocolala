@@ -3,14 +3,8 @@
 #include <Balanza.h>
 
 void Balanza::calibrar(int pendiente){
-  Serial.println("~ CALIBRACIÓN DE LA BALANZA ~");
-  delay(100);
-  Serial.println("No ponga ningun objeto sobre la balanza");
-
   tare(100);  //El peso actual es considerado "Tara".
   set_scale(pendiente); //Valor de la pendiente de la regresión
-
-  Serial.println("¡¡¡LISTO PARA PESAR!!!"); 
   delay(100); 
 }
 

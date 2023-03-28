@@ -13,6 +13,8 @@ var setteable_reference = 0;
 
 export default function Main({navigation}) {
   const [visibleRefDia, setVisibleRefDia] = useState(false);
+  const [visibleCali, setVisibleCali] = useState(false);
+  const [visibleStop, setVisibleStop] = useState(false);
 
   const showRefDialog = () => {
     setVisibleRefDia(true);
@@ -31,10 +33,64 @@ export default function Main({navigation}) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reference:setteable_reference})
     })
+
+    putWaterFill(true);
   
     setVisibleRefDia(false);
 
   };
+
+  const handleCalOk = () =>{
+      setVisibleCali(false);
+  };
+
+  const handleStopOk = () =>{
+    setVisibleStop(false);
+};
+
+  const putCalibrate = () =>{
+
+    //Shows the dialog
+    setVisibleCali(true);
+
+    //PUT REQUEST PARA CALIBRAR
+    fetchWithTimeout(`${ESP32IP}/calibrate`, {
+      method: 'PUT',
+      timeout:1000,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({calibrate:true})
+    })
+    .catch(function (err){
+      console.log(err);  // Prints "Error: something went terribly wrong"
+  });
+  };
+
+  const putWaterFill = (state) =>{
+        //PUT REQUEST PARA CALIBRAR
+        fetchWithTimeout(`${ESP32IP}/waterFill`, {
+          method: 'PUT',
+          timeout:1000,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({waterFill:state})
+        })
+        .catch(function (err){
+          console.log(err);  // Prints "Error: something went terribly wrong"
+      });
+  };
+
+  const putStop = () =>{
+    setVisibleStop(true);
+    fetchWithTimeout(`${ESP32IP}/stop`, {
+      method: 'PUT',
+      timeout:1000,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({stop:true})
+    })
+    .catch(function (err){
+      console.log(err);  // Prints "Error: something went terribly wrong"
+  });
+  }
+
 
   const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState(true);
@@ -84,7 +140,7 @@ export default function Main({navigation}) {
       
 
       <View style={styles.chocoContainer}>
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity onPress={putCalibrate}>
           <Image style = {{width:340, height:121}} source={require("./assets/images/balanza.png")}/>
       </TouchableOpacity>
 
@@ -98,7 +154,7 @@ export default function Main({navigation}) {
       </View>
 
       <View style={styles.bottomContainer}>
-      <TouchableOpacity onPress={handlePress}>
+      <TouchableOpacity onPress={putStop}>
           <Image style = {{width:61, height:61}} source={require("./assets/images/offButton.png")}/>
       </TouchableOpacity>
       </View>
@@ -113,6 +169,24 @@ export default function Main({navigation}) {
       <Dialog.Button label="Cancel" onPress={handleRefCancel}/>
         <Dialog.Button label="OK" onPress={handleRefOk}/>
     </Dialog.Container>
+
+
+    <Dialog.Container visible={visibleCali}>
+      <Dialog.Title>Calibrar</Dialog.Title>
+      <Dialog.Description>
+            !Se ha calibrado exitosamente la balanza!
+      </Dialog.Description>
+      <Dialog.Button label="OK" onPress={handleCalOk}/>
+    </Dialog.Container>
+
+    <Dialog.Container visible={visibleStop}>
+      <Dialog.Title>Stop</Dialog.Title>
+      <Dialog.Description>
+            Se ha detenido y reiniciado la chocolatera.
+      </Dialog.Description>
+      <Dialog.Button label="OK" onPress={handleStopOk}/>
+    </Dialog.Container>
+
     </View>
 
 

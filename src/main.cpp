@@ -36,6 +36,10 @@ bool defaultFill  = false;
 bool* calibrarPointer;
 bool defaultCalibrar = false;
 
+//Botón de stop
+bool* stopPointer;
+bool defaultStop = false;
+
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
 MotoBomba motoBomba(pump_PWM);
@@ -55,6 +59,7 @@ void setup() {
   referenciaPointer = &default_ref; 
   waterFillPointer = &defaultFill;
   calibrarPointer = &defaultCalibrar;
+  stopPointer = &defaultStop;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -80,6 +85,8 @@ void setup() {
   ChocolalaREST::linkReference((referenciaPointer));
   ChocolalaREST::linkWaterFill((waterFillPointer));
   ChocolalaREST::linkCalibrate((calibrarPointer));
+  ChocolalaREST::linkStop((stopPointer));
+
 
   //Vincular el API REST con el servidor WiFi
 
@@ -94,7 +101,7 @@ void setup() {
   iotHandler.addPUTtoWeb("/reference", ChocolalaREST::PUTReference);
   iotHandler.addPUTtoWeb("/waterFill", ChocolalaREST::PUTWaterFill);
   iotHandler.addPUTtoWeb("/calibrate", ChocolalaREST::PUTCalibrate);
-
+  iotHandler.addPUTtoWeb("/stop", ChocolalaREST::PUTStop);
 
   (iotHandler.getServerPointer())->begin();
 }
@@ -105,13 +112,24 @@ void loop() {
   //¿Calibrar manualmente?
   if(*calibrarPointer){
     balanza.calibrar(pendiente);
-    calibrarPointer = &defaultCalibrar;
+    *calibrarPointer = false;
+      Serial.println("Calibrado."); 
   }
 
   //Actualización obligatoria del controlador
   if(*waterFillPointer){
     controladorVolumen.update();
     controladorVolumen.setReference(referenciaPointer);
+  }
+
+  //Botón de STOP
+  if(*stopPointer){
+    *waterFillPointer = false;
+    motoBomba.set_speed(0);
+    *referenciaPointer = 0;
+    Serial.println("Stop!");
+
+    *stopPointer = false;
   }
   
   controladorVolumen.printVolumeMean(2000);

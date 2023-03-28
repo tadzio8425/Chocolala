@@ -25,6 +25,7 @@ namespace ChocolalaREST{
   double* _referencePointer;
   bool* _waterFillPointer;
   bool* _calibratePointer;
+  bool* _stopPointer;
 
   void add_json_object(char *tag, float value, char *unit) {
     JsonObject obj = jsonDocument.createNestedObject();
@@ -65,7 +66,6 @@ namespace ChocolalaREST{
 
   void GETAll(){
     jsonDocument.clear();
-    Serial.println("Get all");
     add_json_object("reference", (*_referencePointer), "mL");
     add_json_object("waterFill", (*_waterFillPointer), "bool");
     add_json_object("volume", (*_volumePointer), "mL"); 
@@ -116,9 +116,21 @@ namespace ChocolalaREST{
       //Obtener si se desea calibrar
       (*_calibratePointer) = (bool) jsonDocument["calibrate"];
 
-      Serial.println("Calibrando...");
+      GETAll();
   }
 
+  void PUTStop(){
+        if ((*_serverPointer).hasArg("plain") == false) {
+      Serial.println("Esperaba un booleano, recibí: nada.");
+    }
+      String body = (*_serverPointer).arg("plain");
+      deserializeJson(jsonDocument, body);
+      
+      //Obtener si se desea calibrar
+      (*_stopPointer) = (bool) jsonDocument["stop"];
+
+      GETAll();
+  }
 
 
   void linkVolume(float* volumePointer){
@@ -140,5 +152,9 @@ namespace ChocolalaREST{
 
   void linkCalibrate(bool* calibratePointer){
       _calibratePointer = calibratePointer;
+  }
+
+  void linkStop(bool* stopPointer){
+      _stopPointer = stopPointer;
   }
 }
