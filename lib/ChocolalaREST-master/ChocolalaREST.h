@@ -24,6 +24,7 @@ namespace ChocolalaREST{
   float* _weightPointer;
   double* _referencePointer;
   bool* _waterFillPointer;
+  bool* _calibratePointer;
 
   void add_json_object(char *tag, float value, char *unit) {
     JsonObject obj = jsonDocument.createNestedObject();
@@ -105,6 +106,20 @@ namespace ChocolalaREST{
   }
 
 
+  void PUTCalibrate(){
+        if ((*_serverPointer).hasArg("plain") == false) {
+      Serial.println("Esperaba un booleano, recibí: nada.");
+    }
+      String body = (*_serverPointer).arg("plain");
+      deserializeJson(jsonDocument, body);
+      
+      //Obtener si se desea calibrar
+      (*_calibratePointer) = (bool) jsonDocument["calibrate"];
+
+      Serial.println("Calibrando...");
+  }
+
+
 
   void linkVolume(float* volumePointer){
       _volumePointer = volumePointer;
@@ -121,5 +136,9 @@ namespace ChocolalaREST{
 
   void linkWaterFill(bool* waterFillPointer){
       _waterFillPointer = waterFillPointer;
+  }
+
+  void linkCalibrate(bool* calibratePointer){
+      _calibratePointer = calibratePointer;
   }
 }

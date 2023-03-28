@@ -32,6 +32,10 @@ bool wireless_mode = true;
 bool* waterFillPointer;
 bool defaultFill  = false;
 
+//¿Calibrar nuevamente?
+bool* calibrarPointer;
+bool defaultCalibrar = false;
+
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
 MotoBomba motoBomba(pump_PWM);
@@ -50,6 +54,7 @@ void setup() {
   Serial.begin(115200);
   referenciaPointer = &default_ref; 
   waterFillPointer = &defaultFill;
+  calibrarPointer = &defaultCalibrar;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -74,6 +79,7 @@ void setup() {
   ChocolalaREST::linkWeight((balanza.get_weightPointer()));
   ChocolalaREST::linkReference((referenciaPointer));
   ChocolalaREST::linkWaterFill((waterFillPointer));
+  ChocolalaREST::linkCalibrate((calibrarPointer));
 
   //Vincular el API REST con el servidor WiFi
 
@@ -87,12 +93,21 @@ void setup() {
   //PUT
   iotHandler.addPUTtoWeb("/reference", ChocolalaREST::PUTReference);
   iotHandler.addPUTtoWeb("/waterFill", ChocolalaREST::PUTWaterFill);
+  iotHandler.addPUTtoWeb("/calibrate", ChocolalaREST::PUTCalibrate);
+
 
   (iotHandler.getServerPointer())->begin();
 }
 
 
 void loop() {
+
+  //¿Calibrar manualmente?
+  if(*calibrarPointer){
+    balanza.calibrar(pendiente);
+    calibrarPointer = &defaultCalibrar;
+  }
+
   //Actualización obligatoria del controlador
   if(*waterFillPointer){
     controladorVolumen.update();
