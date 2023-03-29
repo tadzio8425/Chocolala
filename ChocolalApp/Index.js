@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: '#FFFAF1', //Color de fondo del Tab
-      fontFamily: 'Source-Sans-Black'
+      fontFamily: 'Source-Sans-Black',
+      height:"100%"
     },
     title: {
       fontSize: 69,

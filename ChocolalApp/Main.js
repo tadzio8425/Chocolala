@@ -213,7 +213,8 @@ const styles = StyleSheet.create({
       alignItems:"flex-start",
       justifyContent: "flex-start",
       backgroundColor: '#FFFAF1', //Color de fondo del Tab
-      fontFamily: 'Source-Sans-Black'
+      fontFamily: 'Source-Sans-Black',
+      height:"100%"
     },
     title: {
       fontSize: 36,
@@ -288,8 +289,7 @@ const styles = StyleSheet.create({
       width:"100%",
       maxHeight:60,
       marginTop:"10%",
-      marginLeft:"5%",
-      alignSelf:"start"
+      marginLeft:"5%"
     },
 
     innerConntainer:{

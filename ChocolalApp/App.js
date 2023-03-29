@@ -3,7 +3,7 @@ import { useCallback, useState, useEffect} from 'react';
 import AppLoading from "expo-app-loading";
 import useFonts from './hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator} from '@react-navigation/native-stack';
 import Index from './Index';
 import Main from './Main';
 import {Asset} from  "expo-asset"
