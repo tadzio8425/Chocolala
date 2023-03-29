@@ -11,6 +11,8 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
+#include "A4988.h"
+
 using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
@@ -19,6 +21,19 @@ using namespace ChocolalaREST;
 
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
+
+//Variables - Pin Motor Stepper
+#define RPM 120
+#define MOTOR_STEPS 200
+#define MOTOR_ACCEL 2000
+#define MOTOR_DECEL 1000
+#define DIR 34
+#define STEP 35
+
+//HARDWIRED A GND - NO CONECTAR!
+#define MS1 32
+#define MS2 33
+#define MS3 25
 
 //Variable - calibración
 int pendiente = 627.643083;
@@ -51,6 +66,7 @@ VolumeController controladorVolumen(balanzaPointer, motoBombaPointer);
 
 FirebaseT iotHandler;
 
+A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
 
 void setup() {
 
@@ -78,6 +94,11 @@ void setup() {
   //Inicialización del controlador PID
   controladorVolumen.setReference(referenciaPointer);
   controladorVolumen.setUp(); //Ref
+
+  //Inicialización del motor stepper
+  stepper.begin(RPM, 1);
+  stepper.enable();
+  stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
   
   //Vincular los apuntadores a las variables del backend con el API REST
   ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
@@ -131,6 +152,9 @@ void loop() {
 
     *stopPointer = false;
   }
+
+  //Movimiento del stepper
+  unsigned wait_time = stepper.nextAction();
   
   controladorVolumen.printVolumeMean(2000);
 
