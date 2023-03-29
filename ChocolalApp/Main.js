@@ -93,7 +93,7 @@ export default function Main({navigation}) {
 
 
   const [dataJSON, setData] = useState(true);
-  const [weightJSON, setWeight] = useState(true);
+  const [weightJSON, setWeight] = useState({"value":0});
   const [referenceJSON, setReference] = useState({"value":0});
 
   const loadData = useCallback(async () => {
@@ -132,7 +132,7 @@ export default function Main({navigation}) {
 
       <View style={styles.innerConntainer}>
         <Text style={styles.variableText}>Peso</Text>
-        <TextBox text={weightJSON["value"]} units={weightJSON["unit"]}></TextBox>
+        <TextBox text={weightJSON["value"].toFixed(2)} units={weightJSON["unit"]}></TextBox>
         <Text style={[styles.variableText, {marginLeft: "5%"}]}>Temperatura</Text>
         <TextBox text="yyy" units="°C"></TextBox>
       </View>

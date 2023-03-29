@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include <WebServer.h>
 #include <ArduinoJson.h>
+#include <VolumeController.h>
 
 // JSON data buffer
 StaticJsonDocument<500> jsonDocument;
@@ -26,6 +27,7 @@ namespace ChocolalaREST{
   bool* _waterFillPointer;
   bool* _calibratePointer;
   bool* _stopPointer;
+  VolumeController* _controllerVolPointer;
 
   void add_json_object(char *tag, float value, char *unit) {
     JsonObject obj = jsonDocument.createNestedObject();
@@ -86,6 +88,10 @@ namespace ChocolalaREST{
       //Obtener referencia
       (*_referencePointer) = (double) jsonDocument["reference"];
     
+      //Se responde con la nueva referencia
+      (*_controllerVolPointer).setReference((_referencePointer));
+      (*_controllerVolPointer).setUp();
+
       //Se responde con la nueva referencia
       GETReference();
       
@@ -156,5 +162,9 @@ namespace ChocolalaREST{
 
   void linkStop(bool* stopPointer){
       _stopPointer = stopPointer;
+  }
+
+  void linkControladorVol(VolumeController* controllerVolPointer){
+    _controllerVolPointer = controllerVolPointer;
   }
 }

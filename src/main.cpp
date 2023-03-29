@@ -63,10 +63,12 @@ Balanza* balanzaPointer = &balanza;
 MotoBomba* motoBombaPointer = &motoBomba;
 
 VolumeController controladorVolumen(balanzaPointer, motoBombaPointer);
+VolumeController* controladorVolPointer = &controladorVolumen;
 
 FirebaseT iotHandler;
 
 A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
+
 
 void setup() {
 
@@ -107,6 +109,7 @@ void setup() {
   ChocolalaREST::linkWaterFill((waterFillPointer));
   ChocolalaREST::linkCalibrate((calibrarPointer));
   ChocolalaREST::linkStop((stopPointer));
+  ChocolalaREST::linkControladorVol((controladorVolPointer));
 
 
   //Vincular el API REST con el servidor WiFi
@@ -140,7 +143,9 @@ void loop() {
   //Actualización obligatoria del controlador
   if(*waterFillPointer){
     controladorVolumen.update();
-    controladorVolumen.setReference(referenciaPointer);
+  }
+  else{
+    (*balanzaPointer).get_volumen(1, 1);
   }
 
   //Botón de STOP
