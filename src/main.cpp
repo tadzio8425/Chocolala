@@ -27,13 +27,13 @@ int pump_PWM = 14;
 #define MOTOR_STEPS 200
 #define MOTOR_ACCEL 2000
 #define MOTOR_DECEL 1000
-#define DIR 34
-#define STEP 35
+#define DIR 32
+#define STEP 33
 
 //HARDWIRED A GND - NO CONECTAR!
-#define MS1 32
-#define MS2 33
-#define MS3 25
+#define MS1 0
+#define MS2 0
+#define MS3 0
 
 //Variable - calibración
 int pendiente = 627.643083;
