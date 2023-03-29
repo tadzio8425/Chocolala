@@ -79,7 +79,7 @@ void setup() {
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
-    iotHandler.setWiFi("Chocolala", "chocolele", true);
+    iotHandler.setWiFi("Chocolala", "chocolele", false);
     //iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
     iotHandler.setWebServer(80);
     ChocolalaREST::linkServer(iotHandler.getServerPointer());
