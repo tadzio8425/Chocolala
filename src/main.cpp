@@ -11,8 +11,6 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
-#include "A4988.h"
-
 using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
@@ -23,17 +21,17 @@ using namespace ChocolalaREST;
 int pump_PWM = 14;
 
 //Variables - Pin Motor Stepper
-#define RPM 120
-#define MOTOR_STEPS 200
-#define MOTOR_ACCEL 2000
-#define MOTOR_DECEL 1000
 #define DIR 32
 #define STEP 33
+#define ENCODER 34
 
 //HARDWIRED A GND - NO CONECTAR!
 #define MS1 0
 #define MS2 0
 #define MS3 0
+
+//VARIABLES CONTROL MOTOR
+int encoder_counter = 0;
 
 //Variable - calibración
 int pendiente = 627.643083;
@@ -55,6 +53,11 @@ bool defaultCalibrar = false;
 bool* stopPointer;
 bool defaultStop = false;
 
+//Timer del contador de encoder
+double initialEncoderTime;
+bool toggleEncoderTimer = false;
+int prevEncoderValue = 1;
+
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
 MotoBomba motoBomba(pump_PWM);
@@ -67,10 +70,78 @@ VolumeController* controladorVolPointer = &controladorVolumen;
 
 FirebaseT iotHandler;
 
-A4988 stepper(MOTOR_STEPS, DIR, STEP, MS1, MS2, MS3);
+TaskHandle_t motorTask;
+
+bool pulseToggle = false;
+
+void motorPulse(int del){
+
+    digitalWrite(STEP, HIGH);
+    delay(del);
+    digitalWrite(STEP, LOW);
+    delay(del);
+
+  }
+
+
+
+double motorCount(int valorEncoder, double timeInterval){
+
+
+  double actual_time = millis();
+
+  double time_difference = actual_time - initialEncoderTime;
+
+  if(valorEncoder == 1 && valorEncoder != prevEncoderValue){
+    encoder_counter += 1;
+  }
+
+  prevEncoderValue = valorEncoder; 
+
+  if(time_difference > timeInterval){
+    double RPM = ((encoder_counter/12)/(timeInterval/1000))*60;
+    initialEncoderTime = millis();
+    encoder_counter = 0;
+    return RPM;
+  }
+  else{
+    return 0;
+  }
+}
+
+void motorTaskCode( void * pvParameters ){
+  Serial.print("Task1 running on core ");
+  Serial.println(xPortGetCoreID());
+
+  for(;;){
+    motorPulse(1);
+
+    int valorEncoder = digitalRead(ENCODER);
+
+    double stepsInTime = motorCount(valorEncoder, 5000);
+    if(stepsInTime != 0){
+      Serial.println(stepsInTime);
+    }
+  } 
+}
 
 
 void setup() {
+
+    xTaskCreatePinnedToCore(
+                    motorTaskCode,   /* Task function. */
+                    "Task1",     /* name of task. */
+                    10000,       /* Stack size of task */
+                    NULL,        /* parameter of the task */
+                    1,           /* priority of the task */
+                    &motorTask,      /* Task handle to keep track of created task */
+                    0);          /* pin task to core 0 */                  
+  delay(500); 
+
+  pinMode(DIR, OUTPUT);
+  pinMode(STEP, OUTPUT);
+  pinMode(ENCODER, INPUT);
+  digitalWrite(DIR,LOW);
 
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
@@ -97,11 +168,6 @@ void setup() {
   controladorVolumen.setReference(referenciaPointer);
   controladorVolumen.setUp(); //Ref
 
-  //Inicialización del motor stepper
-  stepper.begin(RPM, 1);
-  stepper.enable();
-  stepper.setSpeedProfile(stepper.LINEAR_SPEED, MOTOR_ACCEL, MOTOR_DECEL);
-  
   //Vincular los apuntadores a las variables del backend con el API REST
   ChocolalaREST::linkVolume((balanza.get_volumenPointer()));
   ChocolalaREST::linkWeight((balanza.get_weightPointer()));
@@ -128,10 +194,13 @@ void setup() {
   iotHandler.addPUTtoWeb("/stop", ChocolalaREST::PUTStop);
 
   (iotHandler.getServerPointer())->begin();
+
+  initialEncoderTime = millis();
 }
 
 
 void loop() {
+
 
   //¿Calibrar manualmente?
   if(*calibrarPointer){
@@ -158,16 +227,14 @@ void loop() {
     *stopPointer = false;
   }
 
-  //Movimiento del stepper
-  unsigned wait_time = stepper.nextAction();
-  
-  controladorVolumen.printVolumeMean(2000);
-
+  //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient();
 
-  delay(20);
-
+ 
+  
+  
 }
+
 
 
 
