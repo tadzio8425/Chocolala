@@ -77,6 +77,14 @@ TaskHandle_t motorTask;
 bool pulseToggle = false;
 //Pulsos del motor
 double errorTol = 0.1;
+float delayDeseado = 1;
+int RPMDeseado = 60;
+int RPMargen = 3;
+
+float RPMToDelay(int rpm){
+  return -31.73*log(rpm) + 136.38;
+}
+
 
 void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS1, ms1Val);
@@ -85,6 +93,7 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
 }
 
 void motorPulse(int del){
+    setMicrostep(LOW, LOW, LOW);
     digitalWrite(STEP, HIGH);
     delay(del);
     digitalWrite(STEP, LOW);
@@ -92,7 +101,16 @@ void motorPulse(int del){
 
 void motorSmartPulse(double mean, double numPulsos, double numerator, double delayDeseado, double invDelayCalculado){
 
-    if(0.01 < abs(invDelayCalculado - 1 / delayDeseado) ){
+     double delayDeseadoInner = delayDeseado;
+     int delayCast = 1;
+
+    if(delayDeseado >= 2){
+      delayCast = floor(delayDeseado);;
+      delayDeseadoInner = 1 + delayDeseado - delayCast;
+      mean = 1/delayDeseadoInner;
+    }
+
+    if(0.01 < abs(invDelayCalculado - 1 / delayDeseadoInner) && invDelayCalculado >= 1 /delayDeseadoInner){
 
       if(FULL_STEP - mean <= mean){
         setMicrostep(LOW, LOW, LOW);
@@ -133,10 +151,10 @@ void motorSmartPulse(double mean, double numPulsos, double numerator, double del
       //Serial.println(numPulsos);
 
       digitalWrite(STEP, HIGH);
-      delay(1);
+      delay(delayCast);
       digitalWrite(STEP, LOW);
 
-      motorSmartPulse(mean, numPulsos + 1, numerator, delayDeseado, invDelayCalculado);
+      motorSmartPulse(mean, numPulsos + 1, numerator, delayDeseadoInner, invDelayCalculado);
     }
     else{
       //Serial.println("Fuera");
@@ -180,14 +198,17 @@ void motorTaskCode( void * pvParameters ){
   Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
 
+
+
   for(;;){
 
-  
-    motorSmartPulse(1/1.9, 1, 0, 1.9, 1000);
+    motorSmartPulse(1.0/1.2, 1, 0, 1.2, 1000);
+
     int valorEncoder = digitalRead(ENCODER);
 
     double stepsInTime = motorCount(valorEncoder, 5000);
     if(stepsInTime != 0){
+
       Serial.println(stepsInTime);
     }
   } 
@@ -195,6 +216,9 @@ void motorTaskCode( void * pvParameters ){
 
 
 void setup() {
+
+    delayDeseado = RPMToDelay(RPMDeseado);
+ 
 
     xTaskCreatePinnedToCore(
                     motorTaskCode,   /* Task function. */
@@ -273,6 +297,7 @@ void setup() {
   (iotHandler.getServerPointer())->begin();
 
   initialEncoderTime = millis();
+
 }
 
 
