@@ -96,34 +96,34 @@ void motorSmartPulse(double mean, double numPulsos, double numerator, double del
 
       if(FULL_STEP - mean <= mean){
         setMicrostep(LOW, LOW, LOW);
-        Serial.println("FULL");
+        //Serial.println("FULL");
         numerator += FULL_STEP;
         mean = FULL_STEP - mean;
       }
       else if((FULL_STEP/(double)2) - mean <= mean){
         setMicrostep(HIGH, LOW, LOW);
-        Serial.println("HALF");
+        //Serial.println("HALF");
         numerator += FULL_STEP/(double)2;
         mean = (FULL_STEP/(double)2) - mean/(double)2;
       }
 
       else if((FULL_STEP/(double)4) - mean <= mean){
         setMicrostep(LOW, HIGH, LOW);
-        Serial.println("QUARTER");
+        //Serial.println("QUARTER");
         numerator += FULL_STEP/(double)4;
         mean = (FULL_STEP/(double)4) - mean/(double)4;
       }
 
       else if((FULL_STEP/(double)8) - mean <= mean){
         setMicrostep(HIGH, HIGH, LOW);
-        Serial.println("EIGHT");
+        //Serial.println("EIGHT");
         numerator += FULL_STEP/(double)8;
         mean = (FULL_STEP/(double)8) - mean/(double)8;
       }
 
       else if((FULL_STEP/(double)16) - mean <= mean){
         setMicrostep(HIGH, HIGH, HIGH);
-        Serial.println("SIXTEENTH");
+        //Serial.println("SIXTEENTH");
         numerator += FULL_STEP/(double)16;
         mean = (FULL_STEP/(double)16) - mean/(double)16;
       }
@@ -139,7 +139,7 @@ void motorSmartPulse(double mean, double numPulsos, double numerator, double del
       motorSmartPulse(mean, numPulsos + 1, numerator, delayDeseado, invDelayCalculado);
     }
     else{
-      Serial.println("Fuera");
+      //Serial.println("Fuera");
     }
     
   }
