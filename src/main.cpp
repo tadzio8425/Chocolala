@@ -138,31 +138,25 @@ double motorCount(int valorEncoder, double timeInterval){
 void smartPulse(float step){
       if(step == 1.0){
         setMicrostep(LOW, LOW, LOW);
-        Serial.println("FULL");
         motorPulse(1);
       }
       else if(step == 0.5){
         setMicrostep(HIGH, LOW, LOW);
-        Serial.println("HALF");
         motorPulse(1);
       }
       else if(step == 0.25){
         setMicrostep(LOW, HIGH, LOW);
-        Serial.println("QUARTER");
         motorPulse(1);
       }
       else if(step == 0.125){
         setMicrostep(HIGH, HIGH, LOW);
-        Serial.println("EIGHT");
         motorPulse(1);
       }
       else if(step == 0.0625){
         setMicrostep(HIGH, HIGH, HIGH);
-        Serial.println("SIXTEENTH");
         motorPulse(1);
       }
       else if(step == 0){
-        Serial.println("DEAD");
         delay(1);
       }
 
@@ -178,7 +172,7 @@ std::vector<double> getSteps(float RPM, double stepWindow, double tolerancia) {
 
     std::vector<double> responseSteps = {};
 
-  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625};
+  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625, 0};
 
     for(int i = 0; i < stepWindow; i++){
       for(double step: microsteps){
@@ -208,7 +202,7 @@ void runSteps(std::vector<double> stepList){
 void motorTaskCode( void * pvParameters ){
   Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
-  std::vector<double> steps = getSteps(82.5, 1, 0.01);
+  std::vector<double> steps = getSteps(200, 1, 0.001);
 
   for(;;){
     runSteps(steps);
