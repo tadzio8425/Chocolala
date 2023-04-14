@@ -1,9 +1,5 @@
 microStep_list = [1/16, 1/8, 1/4, 1/2, 1]
-desiredStep = 5.625
 
-microStep_list = [1/16, 1/8, 1/4, 1/2, 1]
-
-microStep_list = [1/16, 1/8, 1/4, 1/2, 1]
 
 def getSteps(usableSteps: int, stepValue: float) -> bool:
     memo = {}
@@ -39,5 +35,5 @@ def getSteps(usableSteps: int, stepValue: float) -> bool:
     return memoizedGetSteps(len(microStep_list), stepValue)
 
 
-steps = getSteps(len(microStep_list), desiredStep)
+steps = getSteps(len(microStep_list), 1.5)
 print(steps)

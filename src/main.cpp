@@ -11,6 +11,13 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
+#include <iostream>
+#include <vector>
+#include <map>
+#include <utility>
+#include <algorithm>
+
+
 using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
@@ -74,12 +81,16 @@ FirebaseT iotHandler;
 
 TaskHandle_t motorTask;
 
+std::vector<float> microStep_list = {0.0625, 0.125, 0.25, 0.5, 1};
+
+
 bool pulseToggle = false;
 //Pulsos del motor
 double errorTol = 0.1;
-float delayDeseado = 1;
+float delayDeseado = 3/2;
 int RPMDeseado = 60;
 int RPMargen = 3;
+
 
 float RPMToDelay(int rpm){
   return -31.73*log(rpm) + 136.38;
@@ -93,81 +104,10 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
 }
 
 void motorPulse(int del){
-    setMicrostep(LOW, LOW, LOW);
     digitalWrite(STEP, HIGH);
     delay(del);
     digitalWrite(STEP, LOW);
   }
-
-void motorSmartPulse(double mean, double numPulsos, double numerator, double delayDeseado, double invDelayCalculado){
-
-     double delayDeseadoInner = delayDeseado;
-     int delayCast = 1;
-
-    if(delayDeseado >= 2){
-      delayCast = floor(delayDeseado);;
-      delayDeseadoInner = 1 + delayDeseado - delayCast;
-      mean = 1/delayDeseadoInner;
-    }
-
-    if(0.01 < abs(invDelayCalculado - 1 / delayDeseadoInner) && invDelayCalculado >= 1 /delayDeseadoInner){
-
-      if(FULL_STEP - mean <= mean){
-        setMicrostep(LOW, LOW, LOW);
-        //Serial.println("FULL");
-        numerator += FULL_STEP;
-        mean = FULL_STEP - mean;
-      }
-      else if((FULL_STEP/(double)2) - mean <= mean){
-        setMicrostep(HIGH, LOW, LOW);
-        //Serial.println("HALF");
-        numerator += FULL_STEP/(double)2;
-        mean = (FULL_STEP/(double)2) - mean/(double)2;
-      }
-
-      else if((FULL_STEP/(double)4) - mean <= mean){
-        setMicrostep(LOW, HIGH, LOW);
-        //Serial.println("QUARTER");
-        numerator += FULL_STEP/(double)4;
-        mean = (FULL_STEP/(double)4) - mean/(double)4;
-      }
-
-      else if((FULL_STEP/(double)8) - mean <= mean){
-        setMicrostep(HIGH, HIGH, LOW);
-        //Serial.println("EIGHT");
-        numerator += FULL_STEP/(double)8;
-        mean = (FULL_STEP/(double)8) - mean/(double)8;
-      }
-
-      else if((FULL_STEP/(double)16) - mean <= mean){
-        setMicrostep(HIGH, HIGH, HIGH);
-        //Serial.println("SIXTEENTH");
-        numerator += FULL_STEP/(double)16;
-        mean = (FULL_STEP/(double)16) - mean/(double)16;
-      }
-
-      invDelayCalculado = numerator/numPulsos;
-      
-      //Serial.println(numPulsos);
-
-      digitalWrite(STEP, HIGH);
-      delay(delayCast);
-      digitalWrite(STEP, LOW);
-
-      motorSmartPulse(mean, numPulsos + 1, numerator, delayDeseadoInner, invDelayCalculado);
-    }
-    else{
-      //Serial.println("Fuera");
-    }
-    
-  }
-
-
-
-
-
-
-
 
 
 double motorCount(int valorEncoder, double timeInterval){
@@ -194,21 +134,80 @@ double motorCount(int valorEncoder, double timeInterval){
   }
 }
 
+
+void smartPulse(float step){
+      if(step == 1.0){
+        setMicrostep(LOW, LOW, LOW);
+        motorPulse(1);
+      }
+      else if(step == 0.5){
+        setMicrostep(LOW, HIGH, LOW);
+        motorPulse(1);
+      }
+      else if(step == 0.25){
+        setMicrostep(HIGH, LOW, LOW);
+        motorPulse(1);
+      }
+      else if(step == 0.125){
+        setMicrostep(HIGH, HIGH, LOW);
+        motorPulse(1);
+      }
+      else if(step == 0.0625){
+        setMicrostep(HIGH, HIGH, HIGH);
+        motorPulse(1);
+      }
+      else if(step == 0){
+        delay(1);
+      }
+
+}
+
+
+#include <iostream>
+#include <vector>
+
+std::vector<double> getSteps(float RPM, double stepWindow) {
+
+    double desiredStep = (RPM*360)/(1.8*60*1000);
+
+    std::vector<double> responseSteps = {};
+
+  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625, 0};
+
+    for(int i = 0; i < stepWindow; i++){
+      for(double step: microsteps){
+        if(step/stepWindow <= desiredStep){
+          responseSteps.push_back(step);
+          desiredStep -= step/stepWindow;
+          break;
+        }
+      }
+    }
+
+    return responseSteps;
+}
+
+
+void runSteps(std::vector<double> stepList){
+
+    for(double step: stepList){
+      smartPulse(step);
+    }
+}
+
 void motorTaskCode( void * pvParameters ){
   Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
-
-
+  std::vector<double> steps = getSteps(300, 6);
 
   for(;;){
-
-    motorSmartPulse(1.0/1.2, 1, 0, 1.2, 1000);
+    runSteps(steps);
 
     int valorEncoder = digitalRead(ENCODER);
 
     double stepsInTime = motorCount(valorEncoder, 5000);
     if(stepsInTime != 0){
-
+      
       Serial.println(stepsInTime);
     }
   } 
@@ -217,13 +216,10 @@ void motorTaskCode( void * pvParameters ){
 
 void setup() {
 
-    delayDeseado = RPMToDelay(RPMDeseado);
- 
-
     xTaskCreatePinnedToCore(
                     motorTaskCode,   /* Task function. */
                     "Task1",     /* name of task. */
-                    10000,       /* Stack size of task */
+                    40000,       /* Stack size of task */
                     NULL,        /* parameter of the task */
                     1,           /* priority of the task */
                     &motorTask,      /* Task handle to keep track of created task */
