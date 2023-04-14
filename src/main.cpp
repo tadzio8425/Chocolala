@@ -138,25 +138,31 @@ double motorCount(int valorEncoder, double timeInterval){
 void smartPulse(float step){
       if(step == 1.0){
         setMicrostep(LOW, LOW, LOW);
+        Serial.println("FULL");
         motorPulse(1);
       }
       else if(step == 0.5){
         setMicrostep(HIGH, LOW, LOW);
+        Serial.println("HALF");
         motorPulse(1);
       }
       else if(step == 0.25){
         setMicrostep(LOW, HIGH, LOW);
+        Serial.println("QUARTER");
         motorPulse(1);
       }
       else if(step == 0.125){
         setMicrostep(HIGH, HIGH, LOW);
+        Serial.println("EIGHT");
         motorPulse(1);
       }
       else if(step == 0.0625){
         setMicrostep(HIGH, HIGH, HIGH);
+        Serial.println("SIXTEENTH");
         motorPulse(1);
       }
       else if(step == 0){
+        Serial.println("DEAD");
         delay(1);
       }
 
