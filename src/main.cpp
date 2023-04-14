@@ -141,11 +141,11 @@ void smartPulse(float step){
         motorPulse(1);
       }
       else if(step == 0.5){
-        setMicrostep(LOW, HIGH, LOW);
+        setMicrostep(HIGH, LOW, LOW);
         motorPulse(1);
       }
       else if(step == 0.25){
-        setMicrostep(HIGH, LOW, LOW);
+        setMicrostep(LOW, HIGH, LOW);
         motorPulse(1);
       }
       else if(step == 0.125){
@@ -166,13 +166,13 @@ void smartPulse(float step){
 #include <iostream>
 #include <vector>
 
-std::vector<double> getSteps(float RPM, double stepWindow) {
+std::vector<double> getSteps(float RPM, double stepWindow, double tolerancia) {
 
     double desiredStep = (RPM*360)/(1.8*60*1000);
 
     std::vector<double> responseSteps = {};
 
-  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625, 0};
+  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625};
 
     for(int i = 0; i < stepWindow; i++){
       for(double step: microsteps){
@@ -182,6 +182,10 @@ std::vector<double> getSteps(float RPM, double stepWindow) {
           break;
         }
       }
+    }
+
+    if(desiredStep > tolerancia){
+      return getSteps(RPM, stepWindow+1, tolerancia);
     }
 
     return responseSteps;
@@ -198,7 +202,7 @@ void runSteps(std::vector<double> stepList){
 void motorTaskCode( void * pvParameters ){
   Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
-  std::vector<double> steps = getSteps(300, 6);
+  std::vector<double> steps = getSteps(82.5, 1, 0.01);
 
   for(;;){
     runSteps(steps);
