@@ -16,9 +16,12 @@
 #include <map>
 #include <utility>
 #include <algorithm>
-
+#include <random>
 
 using namespace ChocolalaREST;
+
+
+std::vector<double> steps;
 
 //Variables - Pines Balanza
 #define DOUT  26
@@ -66,6 +69,13 @@ bool defaultStop = false;
 double initialEncoderTime;
 bool toggleEncoderTimer = false;
 int prevEncoderValue = 1;
+double desiredRPM = 125;
+double realRPM;
+int valorEncoder = 0;
+double tolerance = 0.001;
+double time_difference;
+
+auto rng = std::default_random_engine {};
 
 //Instanciación de objetos
 Balanza balanza(DOUT, CLK);
@@ -88,7 +98,6 @@ bool pulseToggle = false;
 //Pulsos del motor
 double errorTol = 0.1;
 float delayDeseado = 3/2;
-int RPMDeseado = 60;
 int RPMargen = 3;
 
 
@@ -103,11 +112,7 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS3, ms3Val);
 }
 
-void motorPulse(int del){
-    digitalWrite(STEP, HIGH);
-    delay(del);
-    digitalWrite(STEP, LOW);
-  }
+
 
 
 double motorCount(int valorEncoder, double timeInterval){
@@ -115,7 +120,7 @@ double motorCount(int valorEncoder, double timeInterval){
 
   double actual_time = millis();
 
-  double time_difference = actual_time - initialEncoderTime;
+    time_difference = actual_time - initialEncoderTime;
 
   if(valorEncoder == 1 && valorEncoder != prevEncoderValue){
     encoder_counter += 1;
@@ -124,7 +129,7 @@ double motorCount(int valorEncoder, double timeInterval){
   prevEncoderValue = valorEncoder; 
 
   if(time_difference > timeInterval){
-    double RPM = ((encoder_counter/12)/(timeInterval/1000))*60;
+    double RPM = ((encoder_counter/12.0)/(timeInterval/1000.0))*60.0;
     initialEncoderTime = millis();
     encoder_counter = 0;
     return RPM;
@@ -135,40 +140,59 @@ double motorCount(int valorEncoder, double timeInterval){
 }
 
 
+void getRPM(){
+    valorEncoder = digitalRead(ENCODER);
+    double upRPM = motorCount(valorEncoder, 5000);
+    if(upRPM != 0){
+          realRPM = upRPM;
+          Serial.println(upRPM);
+        }
+}
+
+void motorPulse(int del){
+    getRPM();
+    digitalWrite(STEP, HIGH);
+    delay(del);
+    digitalWrite(STEP, LOW);
+  }
+
+
 void smartPulse(float step){
-      if(step == 1.0){
+      if(step >= 1.0){
         setMicrostep(LOW, LOW, LOW);
+        //Serial.println("FULL");
         motorPulse(1);
       }
-      else if(step == 0.5){
+      else if(step >= 0.5){
         setMicrostep(HIGH, LOW, LOW);
+        //Serial.println("HALF");
         motorPulse(1);
       }
-      else if(step == 0.25){
+      else if(step >= 0.25){
         setMicrostep(LOW, HIGH, LOW);
+        //Serial.println("QUARTER");
         motorPulse(1);
       }
-      else if(step == 0.125){
+      else if(step >= 0.125){
         setMicrostep(HIGH, HIGH, LOW);
+        //Serial.println("EIGHT");
         motorPulse(1);
       }
-      else if(step == 0.0625){
+      else if(step >= 0.0625){
         setMicrostep(HIGH, HIGH, HIGH);
+        //Serial.println("SIXTEENTH");
         motorPulse(1);
       }
-      else if(step == 0){
+      else if(step >= 0){
+        //Serial.println("DEAD");
         delay(1);
       }
 
 }
 
+std::vector<double> getSteps(float RPM, float stepWindow, float tolerancia) {
 
-#include <iostream>
-#include <vector>
-
-std::vector<double> getSteps(float RPM, double stepWindow, double tolerancia) {
-
-    double desiredStep = (RPM*360)/(1.8*60*1000);
+    float desiredStep = (RPM*360.0)/(1.8*60.0*1000.0);
 
     std::vector<double> responseSteps = {};
 
@@ -176,17 +200,16 @@ std::vector<double> getSteps(float RPM, double stepWindow, double tolerancia) {
 
     for(int i = 0; i < stepWindow; i++){
       for(double step: microsteps){
-        if(step/stepWindow <= desiredStep){
+        if((float) step/stepWindow <= desiredStep){
           responseSteps.push_back(step);
-          desiredStep -= step/stepWindow;
+          desiredStep -= (float)step/stepWindow;
           break;
         }
       }
     }
 
-    if(desiredStep > tolerancia){
-      return getSteps(RPM, stepWindow+1, tolerancia);
-    }
+    if(desiredStep > tolerancia && stepWindow <= 29){
+      return getSteps(RPM, stepWindow+1, tolerancia);}
 
     return responseSteps;
 }
@@ -196,26 +219,34 @@ void runSteps(std::vector<double> stepList){
 
     for(double step: stepList){
       smartPulse(step);
+      //Serial.println(step);
     }
 }
 
 void motorTaskCode( void * pvParameters ){
   Serial.print("Task1 running on core ");
   Serial.println(xPortGetCoreID());
-  std::vector<double> steps = getSteps(200, 1, 0.001);
+  steps = getSteps(desiredRPM, 1, tolerance);
+
+  int controlIndex = steps.size() - 1;
+  bool performControl = false;
+
+  std::shuffle(std::begin(steps), std::end(steps), rng);
 
   for(;;){
+
+    //Serial.println("loop");  
     runSteps(steps);
 
-    int valorEncoder = digitalRead(ENCODER);
+    if(desiredRPM - realRPM > 10 && performControl && realRPM > 0 && time_difference > 4500){
 
-    double stepsInTime = motorCount(valorEncoder, 5000);
-    if(stepsInTime != 0){
-      
-      Serial.println(stepsInTime);
     }
-  } 
-}
+
+    performControl = true;
+
+    }
+  }
+
 
 
 void setup() {
