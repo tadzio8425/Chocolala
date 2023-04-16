@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, Pressable, Alert, Text, TouchableOpacity, handlePress} from 'react-native';
-import { useCallback, useState, useEffect, componentDidMount } from 'react';
+import { useCallback, useState, useEffect, componentDidMount} from 'react';
 import AppLoading from "expo-app-loading";
 import useFonts from './hooks/useFonts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,6 +8,8 @@ import Dialog from "react-native-dialog";
 import DialogInput from 'react-native-dialog/lib/Input';
 import {ESP32IP} from "./Index";
 import {Dimensions} from 'react-native';
+import Modal from "react-native-modal";
+import Slider from '@react-native-community/slider';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -21,9 +23,32 @@ if(windowHeight < 560){
 }
 
 export default function Main({navigation}) {
+
+  const [sliderValue, setSliderValue] = useState(0); // initial value of the slider
+  const [toggleSlider, setToggleSlider] =useState(false);  
+  
+  // function to handle changes in slider value
+
+  
+
+
+  useEffect(() => {
+    // update slider value when desired value changes
+    setSliderValue(sliderValue);
+    setToggleSlider(toggleSlider);
+    console.log(toggleSlider);
+  }, [sliderValue, toggleSlider]);
+
+
+
   const [visibleRefDia, setVisibleRefDia] = useState(false);
   const [visibleCali, setVisibleCali] = useState(false);
   const [visibleStop, setVisibleStop] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   const showRefDialog = () => {
     setVisibleRefDia(true);
@@ -125,7 +150,23 @@ export default function Main({navigation}) {
 
 
 
+  sliderValueChange = (value) => {
+    // Array of desired values
+    const array = [0, 10, 20, 50, 100, 150, 200, 250, 300]
+  
+    const output = array.reduce((prev, curr) => Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
+  
+    setSliderValue(output);
+    // ... Pass output to UI, state, whatever
 
+    if(toggleSlider === true){
+      setToggleSlider(false);
+    }
+    else{
+      setToggleSlider(true);
+    }
+    
+  }
 
 
 
@@ -157,7 +198,7 @@ export default function Main({navigation}) {
           <Image  style = {{width:270*scale_factor, height:248*scale_factor,  marginLeft:38}} source={require("./assets/images/chocolatera.png")}/>
           <ChocoTextBox text={referenceJSON["value"].toFixed(2)} units={referenceJSON["unit"]}></ChocoTextBox>
       </TouchableOpacity>
-      <TouchableOpacity  onPress={handlePress}>
+      <TouchableOpacity  onPress={toggleModal}>
           <Image style = {{width:236*scale_factor, height:194*scale_factor, zIndex:1000, bottom:-35, left:-85}} source={require("./assets/images/batidora_mangotext.png")}/>
       </TouchableOpacity>
       </View>
@@ -195,6 +236,23 @@ export default function Main({navigation}) {
       </Dialog.Description>
       <Dialog.Button label="OK" onPress={handleStopOk}/>
     </Dialog.Container>
+
+
+    <Modal isVisible={isModalVisible}>
+      <View style={[{ flex: 1 }, styles.modal]}>
+        <Text style={{fontSize:20, fontWeight:"bold", marginTop:20}}>Velocidad de mezcla</Text>
+        <Slider 
+          style={{width: '100%', height: 40}}
+          value={sliderValue}
+          step={0}
+          minimumValue={0}
+          maximumValue={300}
+          onSlidingComplete={(value) => {sliderValueChange(value)}}
+        />
+
+      </View>
+    </Modal>
+
 
     </View>
 
@@ -347,6 +405,15 @@ const styles = StyleSheet.create({
     img:{
       maxWidth: "100%",
       maxHeight: "100%"
+    },
+
+    modal:{
+      width:"80%",
+      maxHeight:"50%",
+      backgroundColor:"whitesmoke",
+      alignSelf:'center',
+      borderRadius:20,
+      alignItems:"center",
     }
 
   
