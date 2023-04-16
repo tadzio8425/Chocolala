@@ -59,7 +59,7 @@ export default function Index({navigation}){
       <Dialog.Description>
           Ingrese la IP de la chocolatera:
         </Dialog.Description>
-      <DialogInput onChangeText={ (inputText) => ESP32IP = `http://${inputText}`}></DialogInput>
+      <DialogInput style={{color:'black'}} onChangeText={ (inputText) => ESP32IP = `http://${inputText}`}></DialogInput>
         <Dialog.Button label="OK" onPress={handleOKIP}/>
     </Dialog.Container>
 
