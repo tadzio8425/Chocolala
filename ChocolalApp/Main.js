@@ -7,9 +7,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Dialog from "react-native-dialog";
 import DialogInput from 'react-native-dialog/lib/Input';
 import {ESP32IP} from "./Index";
+import {Dimensions} from 'react-native';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 var setteable_reference = 0;
+var scale_factor = 1;
+
+
+if(windowHeight < 560){
+  scale_factor = 0.8;
+}
 
 export default function Main({navigation}) {
   const [visibleRefDia, setVisibleRefDia] = useState(false);
@@ -139,23 +148,23 @@ export default function Main({navigation}) {
 
       
 
-      <View style={styles.chocoContainer}>
+      <View style={[styles.img, styles.chocoContainer]}>
       <TouchableOpacity onPress={putCalibrate}>
-          <Image style = {{width:340, height:121}} source={require("./assets/images/balanza.png")}/>
+          <Image style = {{width:340*scale_factor, height:121*scale_factor}} source={require("./assets/images/balanza.png")}/>
       </TouchableOpacity>
 
-      <TouchableOpacity style={{zIndex:5}} onPress={showRefDialog}>
-          <Image style = {{width:270, height:248,  marginLeft:38}} source={require("./assets/images/chocolatera.png")}/>
+      <TouchableOpacity style={[{zIndex:5}, styles.img]} onPress={showRefDialog}>
+          <Image  style = {{width:270*scale_factor, height:248*scale_factor,  marginLeft:38}} source={require("./assets/images/chocolatera.png")}/>
           <ChocoTextBox text={referenceJSON["value"].toFixed(2)} units={referenceJSON["unit"]}></ChocoTextBox>
       </TouchableOpacity>
       <TouchableOpacity  onPress={handlePress}>
-          <Image style = {{width:236, height:194, position:"absolute", right:-30, bottom:-30, zIndex:1}} source={require("./assets/images/batidora_mangotext.png")}/>
+          <Image style = {{width:236*scale_factor, height:194*scale_factor, zIndex:1000, bottom:-35, left:-85}} source={require("./assets/images/batidora_mangotext.png")}/>
       </TouchableOpacity>
       </View>
 
       <View style={styles.bottomContainer}>
       <TouchableOpacity onPress={putStop}>
-          <Image style = {{width:61, height:61}} source={require("./assets/images/offButton.png")}/>
+          <Image style = {{width:50, height:50}} source={require("./assets/images/offButton.png")}/>
       </TouchableOpacity>
       </View>
 
@@ -224,7 +233,8 @@ const styles = StyleSheet.create({
       textShadowOffset: {width: 1, height:1},
       textShadowRadius: 2,
       paddingTop:20,
-      paddingLeft:"3%"
+      paddingLeft:"3%",
+      width:"100%"
     },
     separator: {
       marginVertical: 30,
@@ -284,46 +294,40 @@ const styles = StyleSheet.create({
     titleContainer:{
       flex: 1,
       flexDirection: 'row',
-      flexWrap: 'wrap',
       alignItems: 'flex-start', // if you want to fill rows left to right
-      width:"100%",
-      maxHeight:60,
-      marginTop:"10%",
+      minHeight:60,
+      marginTop:10,
       marginLeft:"5%"
     },
 
     innerConntainer:{
       flex: 1,
       flexDirection: 'row',
-      flexWrap: 'wrap',
       width:"100%",
-      maxHeight:60,
-      marginTop:"10%",
-      marginLeft:"7%",
-      alignItems:"center"
+      marginTop:10,
+      alignItems:"center",
+      justifyContent:"space-around",
+      paddingLeft:"5%",
+      paddingRight:"5%"
     },
 
     chocoContainer:{
       flex: 1,
       flexDirection: 'column-reverse',
-      flexWrap: 'wrap',
-      width:"100%",
+      alignSelf: 'center',
+      minHeight:"62%",
       marginTop:"10%",
-      marginLeft:"7%",
       alignItems:"center",
-      width:"100%",
-      alignContent:"flex-start",
-      justifyContent:"flex-start"
+      alignContent:"flex-start"
     },
 
     bottomContainer:{
       flex: 1,
       flexDirection: 'row',
-      flexWrap: 'wrap',
       width:"100%",
       maxHeight:60,
-      marginTop:"10%",
-      marginLeft:"7%",
+      marginTop:40,
+      marginLeft:"5%",
       alignItems:"center",
       marginBottom:20
     },
@@ -337,8 +341,15 @@ const styles = StyleSheet.create({
     numberText:{
       fontFamily: 'Source-Sans-Regular',
       fontSize:20
+    },
+
+    
+    img:{
+      maxWidth: "100%",
+      maxHeight: "100%"
     }
 
+  
     }
   );
   
