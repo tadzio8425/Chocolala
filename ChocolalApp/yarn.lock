@@ -7816,6 +7816,11 @@ react-native-gradle-plugin@^0.71.17:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.17.tgz"
   integrity sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA==
 
+react-native-mark-slider@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/react-native-mark-slider/-/react-native-mark-slider-1.0.1.tgz"
+  integrity sha512-hwcjZ8MsIfTYpIYWywXOraWNBAXcKxLXPKxiu+y7mHu4KYJbnoP+Ib8am3B25TYmBLzRsBTUFOP3LfQOPTa35g==
+
 react-native-modal@^13.0.1:
   version "13.0.1"
   resolved "https://registry.npmjs.org/react-native-modal/-/react-native-modal-13.0.1.tgz"

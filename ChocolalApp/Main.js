@@ -11,6 +11,18 @@ import {Dimensions} from 'react-native';
 import Modal from "react-native-modal";
 import Slider from '@react-native-community/slider';
 import { height } from '@mui/system';
+import MarkSlider from 'react-native-mark-slider';
+ 
+
+const marks = [
+  { name: '0  RPM', value: 0 },
+  { name: '50', value: 50 },
+  { name: '100', value: 100 },
+  { name: '150', value: 150 },
+  { name: '200', value: 200 },
+  { name: '250', value: 250 },
+  { name: '300 RPM', value: 300 },
+];
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -134,6 +146,19 @@ export default function Main({navigation}) {
   }
 
 
+  const putRPM = (value) =>{
+    fetchWithTimeout(`${ESP32IP}/rpm`, {
+      method: 'PUT',
+      timeout:1000,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({rpm:value})
+    })
+    .catch(function (err){
+      console.log(err);  // Prints "Error: something went terribly wrong"
+  });
+  }
+
+
   const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState({"value":0});
   const [referenceJSON, setReference] = useState({"value":0});
@@ -249,14 +274,19 @@ export default function Main({navigation}) {
     <Modal isVisible={isModalVisible}>
       <View style={[{ flex: 1 }, styles.modal]}>
         <Text style={{fontSize:20, fontWeight:"bold", marginTop:20}}>Velocidad de mezcla</Text>
-        <Slider 
-          style={{width: '100%', height: 40}}
-          value={sliderValue}
-          step={0}
-          minimumValue={0}
-          maximumValue={300}
-          onSlidingComplete={(value) => {sliderValueChange(value)}}
-        />
+        
+        <View style={{flex:1, justifyContent:"center", marginTop:30}}>
+        <MarkSlider style={{minWidth:"90%"}}
+              step={50}
+              max={300}
+              marks={marks}
+              onAfterChange={value => putRPM(value)}
+          />
+        </View>
+        <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
+      <Text style={[styles.buttonText]}>Cerrar</Text>
+
+    </Pressable>
 
       </View>
     </Modal>
