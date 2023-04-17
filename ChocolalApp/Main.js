@@ -10,17 +10,20 @@ import {ESP32IP} from "./Index";
 import {Dimensions} from 'react-native';
 import Modal from "react-native-modal";
 import Slider from '@react-native-community/slider';
+import { height } from '@mui/system';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 var setteable_reference = 0;
+
+const map = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
 var scale_factor = 1;
+scale_factor = map(windowHeight,  100, 785, 0, 1,);
+resizeMargin = scale_factor * 10;
 
+console.log(scale_factor);
 
-if(windowHeight < 560){
-  scale_factor = 0.8;
-}
 
 export default function Main({navigation}) {
 
@@ -38,6 +41,11 @@ export default function Main({navigation}) {
     setToggleSlider(toggleSlider);
     console.log(toggleSlider);
   }, [sliderValue, toggleSlider]);
+
+
+  useEffect(() => {
+    // update slider value when desired value changes
+  }, [windowHeight]);
 
 
 
@@ -374,7 +382,8 @@ const styles = StyleSheet.create({
       flexDirection: 'column-reverse',
       alignSelf: 'center',
       minHeight:"62%",
-      marginTop:"10%",
+      flexWrap:"nowrap",
+      marginTop:`${resizeMargin}%`,
       alignItems:"center",
       alignContent:"flex-start"
     },
