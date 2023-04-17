@@ -27,6 +27,7 @@ namespace ChocolalaREST{
   bool* _waterFillPointer;
   bool* _calibratePointer;
   bool* _stopPointer;
+  double* _rpmPointer;
   VolumeController* _controllerVolPointer;
 
   void add_json_object(char *tag, float value, char *unit) {
@@ -72,6 +73,7 @@ namespace ChocolalaREST{
     add_json_object("waterFill", (*_waterFillPointer), "bool");
     add_json_object("volume", (*_volumePointer), "mL"); 
     add_json_object("weight", (*_weightPointer), "g");
+    add_json_object("desiredRPM", (*_rpmPointer), " RPM");
     serializeJson(jsonDocument, buffer); 
     (*_serverPointer).send(200, "application/json", buffer);
   }
@@ -139,6 +141,20 @@ namespace ChocolalaREST{
   }
 
 
+  void PUTRpm(){
+        if ((*_serverPointer).hasArg("plain") == false) {
+      Serial.println("Esperaba un double, recibí: nada.");
+    }
+      String body = (*_serverPointer).arg("plain");
+      deserializeJson(jsonDocument, body);
+      
+      //Obtener si se desea calibrar
+      (*_rpmPointer) = (double) jsonDocument["rpm"];
+
+      GETAll();
+  }
+
+
   void linkVolume(float* volumePointer){
       _volumePointer = volumePointer;
   }
@@ -166,5 +182,9 @@ namespace ChocolalaREST{
 
   void linkControladorVol(VolumeController* controllerVolPointer){
     _controllerVolPointer = controllerVolPointer;
+  }
+
+  void linkRPM(double* rpmPointer){
+    _rpmPointer = rpmPointer;
   }
 }

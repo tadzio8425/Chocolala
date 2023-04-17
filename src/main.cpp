@@ -65,11 +65,15 @@ bool defaultCalibrar = false;
 bool* stopPointer;
 bool defaultStop = false;
 
+//RPM DESEADO
+double* rpmPointer;
+double desiredRPM = 0;
+
 //Timer del contador de encoder
 double initialEncoderTime;
 bool toggleEncoderTimer = false;
 int prevEncoderValue = 1;
-double desiredRPM = 125;
+
 double realRPM;
 int valorEncoder = 0;
 double tolerance = 0.001;
@@ -267,10 +271,6 @@ void setup() {
   pinMode(MS1, OUTPUT);
   pinMode(MS2, OUTPUT);
   pinMode(MS3, OUTPUT);
-
-  digitalWrite(MS1, HIGH);
-  digitalWrite(MS2, HIGH);
-  digitalWrite(MS3, HIGH);
   
   pinMode(ENCODER, INPUT);
   digitalWrite(DIR,HIGH);
@@ -281,10 +281,11 @@ void setup() {
   waterFillPointer = &defaultFill;
   calibrarPointer = &defaultCalibrar;
   stopPointer = &defaultStop;
+  rpmPointer = &desiredRPM;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
-    iotHandler.setWiFi("Chocolala", "chocolele", true);
+    iotHandler.setWiFi("Chocolala", "chocolele", false);
     //iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
     iotHandler.setWebServer(80);
     ChocolalaREST::linkServer(iotHandler.getServerPointer());
@@ -308,6 +309,7 @@ void setup() {
   ChocolalaREST::linkCalibrate((calibrarPointer));
   ChocolalaREST::linkStop((stopPointer));
   ChocolalaREST::linkControladorVol((controladorVolPointer));
+  ChocolalaREST::linkRPM((rpmPointer));
 
 
   //Vincular el API REST con el servidor WiFi
@@ -324,6 +326,7 @@ void setup() {
   iotHandler.addPUTtoWeb("/waterFill", ChocolalaREST::PUTWaterFill);
   iotHandler.addPUTtoWeb("/calibrate", ChocolalaREST::PUTCalibrate);
   iotHandler.addPUTtoWeb("/stop", ChocolalaREST::PUTStop);
+  iotHandler.addPUTtoWeb("/rpm", ChocolalaREST::PUTRpm);
 
   (iotHandler.getServerPointer())->begin();
 
@@ -359,6 +362,10 @@ void loop() {
 
     *stopPointer = false;
   }
+
+  //Recalcular STEPS si cambia el RPM deseado
+  steps = getSteps(desiredRPM, 1, tolerance);
+
 
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient();
