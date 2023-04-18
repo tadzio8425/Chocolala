@@ -61,6 +61,12 @@ auto rng = std::default_random_engine {};
 double FULL_STEP = 1;
 
 
+union intUnion {
+  int intValue;
+  byte byteArray[sizeof(int)];
+} receivedData;
+
+
 void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS1, ms1Val);
   digitalWrite(MS2, ms2Val);
@@ -212,14 +218,26 @@ void setup(){
 
 void loop(){
 
-  if (SerialPort.available())
-  {
-    int receivedValue;
-    SerialPort.readBytes((char*)&receivedValue, sizeof(receivedValue));
+  Serial.println(Serial.available());
 
+  // Wait until data is available on the serial port
+  if (Serial.available() >= sizeof(receivedData.byteArray)) {
+    // Read the data as a 4-byte integer
+    Serial.readBytes(receivedData.byteArray, sizeof(receivedData.byteArray));
+
+    // Debug statement to print the raw byte values received
+    for (int i = 0; i < sizeof(receivedData.byteArray); i++) {
+      Serial.print(receivedData.byteArray[i], HEX);
+      Serial.print(" ");
+    }
+    Serial.println();
+
+    // Extract the integer value from the raw byte array
+    int receivedValue = receivedData.intValue;
+
+    // Debug statement to print the received integer value
     Serial.print("Received value: ");
-    Serial.println(receivedValue);
-  }
+    Serial.println(receivedValue);}
 
     steps = getSteps(desiredRPM, 1, tolerance);
 

@@ -63,8 +63,8 @@ std::vector<float> microStep_list = {0.0625, 0.125, 0.25, 0.5, 1};
 bool pulseToggle = false;
 
 //RPM DESEADO (Pasar valor a la otra ESP32)
-double* rpmPointer;
-double desiredRPM = 200;
+int* rpmPointer;
+int desiredRPM = 200;
 char rpmString[4] = "200";
 
 void setup() {
@@ -160,5 +160,5 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-    Serial2.write((uint8_t*)&desiredRPM, sizeof(desiredRPM));
+    SerialPort.write((uint8_t*)&desiredRPM, sizeof(desiredRPM));
 }

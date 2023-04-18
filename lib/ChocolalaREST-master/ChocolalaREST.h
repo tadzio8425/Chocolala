@@ -27,7 +27,7 @@ namespace ChocolalaREST{
   bool* _waterFillPointer;
   bool* _calibratePointer;
   bool* _stopPointer;
-  double* _rpmPointer;
+  int* _rpmPointer;
   VolumeController* _controllerVolPointer;
 
   void add_json_object(char *tag, float value, char *unit) {
@@ -184,7 +184,7 @@ namespace ChocolalaREST{
     _controllerVolPointer = controllerVolPointer;
   }
 
-  void linkRPM(double* rpmPointer){
+  void linkRPM(int* rpmPointer){
     _rpmPointer = rpmPointer;
   }
 }
