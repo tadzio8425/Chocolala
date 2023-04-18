@@ -213,7 +213,9 @@ void loop(){
 
   if (SerialPort.available())
   {
-    String a = SerialPort.readString();
+
+    char a;
+    a = SerialPort.read();
     Serial.println(a);
   }
 
