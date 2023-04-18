@@ -24,7 +24,7 @@ std::vector<double> steps;
 //Variables - Pin Motor Stepper
 #define DIR 32
 #define STEP 21
-#define ENCODER 34
+#define ENCODER 13
 
 //HARDWIRED A GND - NO CONECTAR!
 #define MS1 5
