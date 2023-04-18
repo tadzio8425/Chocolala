@@ -1,5 +1,15 @@
 //Librerias
-#include <Arduino.h>
+#include <FirebaseT.h>
+#include <Balanza.h>
+#include <MotoBomba.h>
+#include <PID_v1.h>
+#include <VolumeController.h>
+#include <ChocolalaREST.h>
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+
 #include <iostream>
 #include <vector>
 #include <map>
