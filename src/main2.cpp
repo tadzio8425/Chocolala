@@ -180,7 +180,7 @@ void runSteps(std::vector<double> stepList){
 
 
 void setup(){
-  Serial.begin(115200)
+  Serial.begin(115200);
 
   pinMode(espMaster, INPUT);
   desiredRPM = analogRead(espMaster);
