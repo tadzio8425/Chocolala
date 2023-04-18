@@ -185,8 +185,7 @@ void receiveEvent(int numBytes) {
   int value = 0; // Variable to hold incoming integer value
   while (Wire.available() >= sizeof(value)) {
     Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
-    Serial.print("Received value: ");
-    Serial.println(value); // Print incoming integer value to serial monitor
+    desiredRPM = value;
   }
 
 }
