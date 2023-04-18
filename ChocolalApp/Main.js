@@ -27,6 +27,8 @@ const marks = [
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+let actualRPM;
+
 var setteable_reference = 0;
 
 const map = (value, x1, y1, x2, y2) => (value - x1) * (y2 - x2) / (y1 - x1) + x2;
@@ -147,6 +149,9 @@ export default function Main({navigation}) {
 
 
   const putRPM = (value) =>{
+
+    actualRPM = value;
+
     fetchWithTimeout(`${ESP32IP}/rpm`, {
       method: 'PUT',
       timeout:1000,
@@ -277,12 +282,13 @@ export default function Main({navigation}) {
         
         <View style={{flex:1, justifyContent:"center", marginTop:30}}>
         <MarkSlider style={{minWidth:"90%"}}
-              step={50}
+              step={1}
               max={300}
               marks={marks}
               onAfterChange={value => putRPM(value)}
           />
         </View>
+        <Text>{actualRPM} RPM</Text>
         <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
       <Text style={[styles.buttonText]}>Cerrar</Text>
 
