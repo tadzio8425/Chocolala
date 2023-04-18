@@ -211,5 +211,7 @@ void loop(){
 
     steps = getSteps(desiredRPM, 1, tolerance);
 
+    Serial.println(desiredRPM);
+
     runSteps(steps);
 }

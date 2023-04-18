@@ -71,7 +71,7 @@ bool pulseToggle = false;
 
 //RPM DESEADO (Pasar valor a la otra ESP32)
 double* rpmPointer;
-double desiredRPM = 0;
+double desiredRPM = 200;
 
 
 void setup() {
