@@ -160,5 +160,7 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-    SerialPort.write((uint8_t*)&desiredRPM, sizeof(desiredRPM));
+  String message = "Hello, ESP32 #2!"; // Message to be sent
+  Serial.println("Sending message: " + message); // Print message to serial monitor
+  SerialPort.println(message); // Send message to ESP32 #2
 }

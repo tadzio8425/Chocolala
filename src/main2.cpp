@@ -220,16 +220,9 @@ void loop(){
 
   Serial.println(SerialPort.available());
 
-  // Wait until data is available on the serial port
-  if (SerialPort.available() >= sizeof(receivedData.byteArray)) {
-    // Read the data as a 4-byte integer
-    SerialPort.readBytes(receivedData.byteArray, sizeof(receivedData.byteArray));
-
-    // Extract the integer value from the raw byte array
-    int receivedValue = receivedData.intValue;
-
-    // Print the received integer value
-    Serial.println(receivedValue);
+  if (Serial2.available()) { // Check if there is data available to read
+    String message = Serial2.readString(); // Read the message from Serial2
+    Serial.println("Received message: " + message); // Print the received message to serial monitor
   }
 
     steps = getSteps(desiredRPM, 1, tolerance);
