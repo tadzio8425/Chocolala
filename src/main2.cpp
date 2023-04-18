@@ -218,26 +218,19 @@ void setup(){
 
 void loop(){
 
-  Serial.println(Serial.available());
+  Serial.println(SerialPort.available());
 
   // Wait until data is available on the serial port
-  if (Serial.available() >= sizeof(receivedData.byteArray)) {
+  if (SerialPort.available() >= sizeof(receivedData.byteArray)) {
     // Read the data as a 4-byte integer
-    Serial.readBytes(receivedData.byteArray, sizeof(receivedData.byteArray));
-
-    // Debug statement to print the raw byte values received
-    for (int i = 0; i < sizeof(receivedData.byteArray); i++) {
-      Serial.print(receivedData.byteArray[i], HEX);
-      Serial.print(" ");
-    }
-    Serial.println();
+    SerialPort.readBytes(receivedData.byteArray, sizeof(receivedData.byteArray));
 
     // Extract the integer value from the raw byte array
     int receivedValue = receivedData.intValue;
 
-    // Debug statement to print the received integer value
-    Serial.print("Received value: ");
-    Serial.println(receivedValue);}
+    // Print the received integer value
+    Serial.println(receivedValue);
+  }
 
     steps = getSteps(desiredRPM, 1, tolerance);
 
