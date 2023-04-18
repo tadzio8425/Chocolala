@@ -23,6 +23,9 @@ int pump_PWM = 33;
 //Variable - ESP32 Slave (PWM)
 int espSlave = 14;
 
+//Pin digital otra ESP32
+int espSlaveDir = 25;
+
 const int freq = 5000;
 const int ledChannel = 1;
 const int resolution = 12;

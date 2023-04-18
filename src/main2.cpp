@@ -34,6 +34,10 @@ std::vector<double> steps;
 //Pin analogo otra ESP32
 #define espMaster 26
 
+//Pin digital otra ESP32
+#define espMasterDir 14
+
+
 //Variables necesarias
 double realRPM;
 int valorEncoder = 0;
