@@ -40,8 +40,6 @@ std::vector<double> steps;
 //Pin digital otra ESP32
 #define espMasterDir 14
 
-HardwareSerial SerialPort(2);
-
 //Variables necesarias
 double realRPM;
 int valorEncoder = 0;
