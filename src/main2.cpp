@@ -218,10 +218,8 @@ void setup(){
 
 void loop(){
 
-  Serial.println(SerialPort.available());
-
-  if (Serial2.available()) { // Check if there is data available to read
-    String message = Serial2.readString(); // Read the message from Serial2
+  if (SerialPort.available()) { // Check if there is data available to read
+    String message = SerialPort.readString(); // Read the message from Serial2
     Serial.println("Received message: " + message); // Print the received message to serial monitor
   }
 
