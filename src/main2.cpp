@@ -54,6 +54,7 @@ double encoder_counter = 0;
 
 double* rpmPointer;
 double desiredRPM = 0;
+char stringRPM[4]; 
 
 auto rng = std::default_random_engine {};
 
@@ -213,10 +214,8 @@ void loop(){
 
   if (SerialPort.available())
   {
-
-    char a;
-    a = SerialPort.read();
-    Serial.println(a);
+    SerialPort.read(stringRPM, 4);
+    Serial.println(stringRPM);
   }
 
     steps = getSteps(desiredRPM, 1, tolerance);

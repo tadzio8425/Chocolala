@@ -65,7 +65,7 @@ bool pulseToggle = false;
 //RPM DESEADO (Pasar valor a la otra ESP32)
 double* rpmPointer;
 double desiredRPM = 200;
-
+char rpmString[4] = "200";
 
 void setup() {
 
@@ -160,5 +160,5 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-  SerialPort.print("Hola");
+  SerialPort.write(rpmString, 4);
 }
