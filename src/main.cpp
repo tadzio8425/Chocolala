@@ -18,10 +18,10 @@ using namespace ChocolalaREST;
 #define CLK  27
 
 //Variable - Pin PWM Bomba
-int pump_PWM = 33;
+int pump_PWM = 14;
 
 //Variable - ESP32 Slave (PWM)
-int espSlave = 14;
+int espSlave = 33;
 
 //Pin digital otra ESP32
 int espSlaveDir = 25;
