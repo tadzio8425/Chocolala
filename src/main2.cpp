@@ -22,17 +22,17 @@
 std::vector<double> steps;
 
 //Variables - Pin Motor Stepper
-#define DIR 32
-#define STEP 21
+#define DIR 26
+#define STEP 32
 #define ENCODER 13
 
 //HARDWIRED A GND - NO CONECTAR!
-#define MS1 5
-#define MS2 18
-#define MS3 19
+#define MS1 26
+#define MS2 27
+#define MS3 14
 
 //Pin analogo otra ESP32
-#define espMaster 26
+#define espMaster 33
 
 //Pin digital otra ESP32
 #define espMasterDir 14
