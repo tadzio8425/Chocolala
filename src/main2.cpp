@@ -213,8 +213,8 @@ void loop(){
 
   if (SerialPort.available())
   {
-    desiredRPM = SerialPort.read();
-    Serial.println(desiredRPM);
+    String a = SerialPort.readString();
+    Serial.println(a);
   }
 
     steps = getSteps(desiredRPM, 1, tolerance);
