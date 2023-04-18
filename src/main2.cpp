@@ -223,12 +223,6 @@ void setup(){
 }
 
 void loop(){
-
-  if (SerialPort.available()) { // Check if there is data available to read
-    String message = SerialPort.readString(); // Read the message from Serial2
-    Serial.println("Received message: " + message); // Print the received message to serial monitor
-  }
-
     steps = getSteps(desiredRPM, 1, tolerance);
 
     runSteps(steps);
