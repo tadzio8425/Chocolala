@@ -4,6 +4,7 @@
 #include <MotoBomba.h>
 #include <PID_v1.h>
 #include <VolumeController.h>
+#include <HardwareSerial.h>
 #include <ChocolalaREST.h>
 
 #include <WiFi.h>
@@ -16,6 +17,8 @@
 #include <utility>
 #include <algorithm>
 #include <random>
+
+HardwareSerial SerialPort(2); // use UART2
 
 
 //Vector de pasos
@@ -37,6 +40,7 @@ std::vector<double> steps;
 //Pin digital otra ESP32
 #define espMasterDir 14
 
+HardwareSerial SerialPort(2);
 
 //Variables necesarias
 double realRPM;
@@ -181,6 +185,7 @@ void runSteps(std::vector<double> stepList){
 
 void setup(){
   Serial.begin(115200);
+  SerialPort.begin(115200, SERIAL_8N1, 16, 17);
 
   pinMode(espMaster, INPUT);
   desiredRPM = analogRead(espMaster);
@@ -207,12 +212,13 @@ void setup(){
 }
 
 void loop(){
-    //Recalcular STEPS si cambia el RPM deseado
-    desiredRPM = map(analogRead(espMaster), 0, 4095, 0, 300);
+
+  if (SerialPort.available())
+  {
+    desiredRPM = SerialPort.read();
+  }
 
     steps = getSteps(desiredRPM, 1, tolerance);
-
-    Serial.println(desiredRPM);
 
     runSteps(steps);
 }

@@ -5,6 +5,7 @@
 #include <MotoBomba.h>
 #include <PID_v1.h>
 #include <VolumeController.h>
+#include <HardwareSerial.h>
 #include <ChocolalaREST.h>
 
 #include <WiFi.h>
@@ -20,15 +21,7 @@ using namespace ChocolalaREST;
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
 
-//Variable - ESP32 Slave (PWM)
-int espSlave = 33;
-
-//Pin digital otra ESP32
-int espSlaveDir = 25;
-
-const int freq = 5000;
-const int ledChannel = 1;
-const int resolution = 12;
+HardwareSerial SerialPort(2);
 
 //Variable - calibración
 int pendiente = 627.643083;
@@ -76,9 +69,7 @@ double desiredRPM = 200;
 
 void setup() {
 
-  // attach the channel to the GPIO to be controlled
-  ledcSetup(ledChannel, freq, resolution);
-  ledcAttachPin(espSlave, ledChannel);
+  SerialPort.begin(115200, SERIAL_8N1, 16, 17); 
 
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
@@ -169,6 +160,5 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-  //Se manda el valor de RPM deseado a la esp esclava
-  ledcWrite(ledChannel, map((*rpmPointer), 0, 300, 0, 4095));
+  SerialPort.print((*rpmPointer));
 }
