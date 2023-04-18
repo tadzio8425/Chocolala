@@ -214,8 +214,11 @@ void loop(){
 
   if (SerialPort.available())
   {
-    SerialPort.read(stringRPM, 4);
-    Serial.println(stringRPM);
+    int receivedValue;
+    SerialPort.readBytes((char*)&receivedValue, sizeof(receivedValue));
+
+    Serial.print("Received value: ");
+    Serial.println(receivedValue);
   }
 
     steps = getSteps(desiredRPM, 1, tolerance);
