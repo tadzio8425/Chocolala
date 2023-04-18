@@ -160,5 +160,5 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-  SerialPort.print((*rpmPointer));
+  SerialPort.print("Hola");
 }
