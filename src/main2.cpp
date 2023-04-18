@@ -4,7 +4,8 @@
 #include <MotoBomba.h>
 #include <PID_v1.h>
 #include <VolumeController.h>
-#include <HardwareSerial.h>
+#include <Wire.h>
+
 #include <ChocolalaREST.h>
 
 #include <WiFi.h>
@@ -59,13 +60,6 @@ char stringRPM[4];
 auto rng = std::default_random_engine {};
 
 double FULL_STEP = 1;
-
-
-union intUnion {
-  int intValue;
-  byte byteArray[sizeof(int)];
-} receivedData;
-
 
 void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS1, ms1Val);
@@ -187,10 +181,22 @@ void runSteps(std::vector<double> stepList){
     }
 }
 
+void receiveEvent(int numBytes) {
+  int value = 0; // Variable to hold incoming integer value
+  while (Wire.available() >= sizeof(value)) {
+    Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
+    Serial.print("Received value: ");
+    Serial.println(value); // Print incoming integer value to serial monitor
+  }
+
+}
+
 
 void setup(){
   Serial.begin(115200);
-  SerialPort.begin(115200, SERIAL_8N1, 16, 17);
+
+  Wire.begin(8); // Address of this ESP32 = 8
+  Wire.onReceive(receiveEvent); // Register receive event
 
   pinMode(espMaster, INPUT);
   desiredRPM = analogRead(espMaster);

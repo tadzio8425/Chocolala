@@ -5,7 +5,7 @@
 #include <MotoBomba.h>
 #include <PID_v1.h>
 #include <VolumeController.h>
-#include <HardwareSerial.h>
+#include <Wire.h>
 #include <ChocolalaREST.h>
 
 #include <WiFi.h>
@@ -69,7 +69,7 @@ char rpmString[4] = "200";
 
 void setup() {
 
-  SerialPort.begin(115200, SERIAL_8N1, 16, 17); 
+  Wire.begin(21, 22); // SDA pin = GPIO 21, SCL pin = GPIO 22
 
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
@@ -160,7 +160,8 @@ void loop() {
   //controladorVolumen.printVolumeMean(2000);
   (iotHandler.getServerPointer())->handleClient(); 
 
-  String message = "Hello, ESP32 #2!"; // Message to be sent
-  Serial.println("Sending message: " + message); // Print message to serial monitor
-  SerialPort.println(message); // Send message to ESP32 #2
+  Wire.beginTransmission(8); // Address of slave ESP32 = 8
+  Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); // Send integer value to slave
+  Wire.endTransmission(); // End transmission
+  delay(100);
 }
