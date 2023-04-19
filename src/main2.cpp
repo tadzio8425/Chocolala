@@ -58,6 +58,7 @@ double encoder_counter = 0;
 
 double* rpmPointer;
 double desiredRPM = 0;
+double prevRPM = 0; // Variable to hold previous value of desiredRPM
 char stringRPM[4]; 
 
 auto rng = std::default_random_engine {};
@@ -137,13 +138,13 @@ void getRPM(){
           count_control += 1;
           realRPM = upRPM;
 
-            if(desiredRPM - realRPM > 0){
-              control_val -= 10;
-            }
-            else if(desiredRPM - realRPM < 0){
-              control_val += 10;
-  }
-          Serial.println(upRPM);
+      if(desiredRPM - realRPM > 0){
+        control_val -= 5;
+      }
+      else if(desiredRPM - realRPM < 0){
+        control_val += 5;
+      }
+      Serial.println(upRPM);
         }
 }
 
@@ -237,7 +238,12 @@ void receiveEvent(int numBytes) {
   int value = 0; // Variable to hold incoming integer value
   while (Wire.available() >= sizeof(value)) {
     Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
-    desiredRPM = value;
+
+    if (value != desiredRPM) {
+      prevRPM = desiredRPM;
+      desiredRPM = value;
+      control_val = 0;
+    }
   }
 
 }
@@ -250,7 +256,6 @@ void setup(){
   Wire.onReceive(receiveEvent); // Register receive event
 
   pinMode(espMaster, INPUT);
-  desiredRPM = analogRead(espMaster);
 
   pinMode(DIR, OUTPUT);
   pinMode(STEP, OUTPUT);
