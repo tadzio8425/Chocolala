@@ -120,6 +120,11 @@ void motorPulse(int del){
   }
 
 void microPulse(int del){
+
+    if(del < 0){
+      del = 0;
+    }
+
     getRPM();
     digitalWrite(STEP, HIGH);
     delayMicroseconds(del);
@@ -243,8 +248,8 @@ void loop(){
     else{
 
       int del = RPMToDelay(desiredRPM);
-      microPulse(del);
       Serial.println(del);
+      microPulse(del);
     }
 
     if(count_control > 3){
