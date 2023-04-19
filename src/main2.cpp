@@ -241,7 +241,10 @@ void loop(){
       runSteps(steps);
     }
     else{
-      microPulse(RPMToDelay(desiredRPM));
+
+      int del = RPMToDelay(desiredRPM);
+      microPulse(del);
+      Serial.println(del);
     }
 
     if(count_control > 3){
