@@ -288,7 +288,7 @@ export default function Main({navigation}) {
               onAfterChange={value => putRPM(value)}
           />
         </View>
-        <Text>{actualRPM} RPM</Text>
+        <Text style={{marginTop:20}}>{actualRPM} RPM</Text>
         <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
       <Text style={[styles.buttonText]}>Cerrar</Text>
 

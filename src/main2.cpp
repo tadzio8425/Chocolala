@@ -157,6 +157,16 @@ void getRPM(){
         }
        
       }
+
+      if(desiredRPM - realRPM > 1){
+          control_val -= 1;
+      }
+
+      if(desiredRPM - realRPM < -1){
+          control_val += 1;
+        }
+
+
       Serial.println(upRPM);
   }
 }
@@ -255,8 +265,7 @@ void receiveEvent(int numBytes) {
     if (value != prevRPM) {
       prevRPM = desiredRPM;
       desiredRPM = value;
-      control_val = 0;
-    }
+      control_val = 0;}
   }
 
 }
