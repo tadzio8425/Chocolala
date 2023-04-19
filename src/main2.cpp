@@ -266,5 +266,8 @@ void setup(){
 void loop(){
 
   int del = RPMToDelay(desiredRPM);
-  microPulse(del);  
+  if(del != -1){
+    microPulse(del); 
+  }
+ 
 }
