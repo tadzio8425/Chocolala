@@ -139,13 +139,26 @@ void getRPM(){
           realRPM = upRPM;
 
       if(desiredRPM - realRPM > 0){
-        control_val -= 5;
+
+        if(desiredRPM - realRPM > 2){
+          control_val -= 10;
+        }
+        else{
+          control_val -= 2;
+        }
+        
       }
       else if(desiredRPM - realRPM < 0){
-        control_val += 5;
+        if(desiredRPM - realRPM < -2){
+           control_val += 10;
+        }
+        else{
+          control_val -= 2;
+        }
+       
       }
       Serial.println(upRPM);
-        }
+  }
 }
 
 void motorPulse(int del){
