@@ -55,8 +55,6 @@ void VolumeController::setUp(){
 
 void VolumeController::update(){
 
-  Serial.println(_volumen_alcanzado);
-
   //Actualización del PID
   _entrada_pid = (*_balanzaPointer).get_volumen(1, 1);
   updateLast10Volumes();
