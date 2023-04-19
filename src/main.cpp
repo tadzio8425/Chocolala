@@ -140,6 +140,7 @@ void loop() {
 
   //Actualización obligatoria del controlador
   if(*waterFillPointer){
+    controladorVolumen.setReference(referenciaPointer);
     controladorVolumen.update();
   }
   else{
