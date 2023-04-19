@@ -79,19 +79,19 @@ float RPMToDelay(int rpm){
   }
   else if(rpm > 75){
     setMicrostep(HIGH, LOW, LOW);
-    return -30128*log(rpm) + 132731;
+    return -42.06*log(rpm) + 151.45;
   }
   else if(rpm > 35.7){
     setMicrostep(LOW, HIGH, LOW);
-    return -30128*log(rpm) + 132731;
+    return -1462*log(rpm) + 7248.9;
   }
   else if(rpm > 19){
     setMicrostep(HIGH, HIGH, LOW);
-    return -30128*log(rpm) + 132731;
+    return 40254*pow(rpm, -1.024);
   }
   else if(rpm > 0){
     setMicrostep(HIGH, HIGH, HIGH);
-    return -30128*log(rpm) + 132731;
+    return 18595*pow(rpm,-1);
   }
   else{
     return -1;
@@ -264,8 +264,7 @@ void setup(){
 }
 
 void loop(){
+
   int del = RPMToDelay(desiredRPM);
-  if(del != -1){
-    microPulse(del);  
-  }
+  microPulse(del);  
 }
