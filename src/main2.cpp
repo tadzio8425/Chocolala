@@ -101,8 +101,6 @@ float RPMToDelay(int rpm, int controlVal){
   }
 
   return result + control_val;
-
-
 }
 
 
@@ -138,6 +136,13 @@ void getRPM(){
     if(upRPM != 0){
           count_control += 1;
           realRPM = upRPM;
+
+            if(desiredRPM - realRPM > 0){
+              control_val -= 10;
+            }
+            else if(desiredRPM - realRPM < 0){
+              control_val += 10;
+  }
           Serial.println(upRPM);
         }
 }
@@ -274,13 +279,6 @@ void loop(){
 
   if(del != -1){
     microPulse(del); 
-  }
-
-  if(desiredRPM - realRPM > 0){
-    control_val -= 10;
-  }
-  else if(desiredRPM - realRPM < 0){
-    control_val += 10;
   }
  
 }
