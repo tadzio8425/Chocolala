@@ -26,6 +26,7 @@ VolumeController::VolumeController(Balanza* balanzaPointer, MotoBomba* motoBomba
 
 void VolumeController::setReference(double* refPointer){
   _referencia_pid = (*refPointer); //Valor de volumen (mL) a alcanzar en estado estable  
+  _volumen_alcanzado = false;
 }
 
 void VolumeController::setUp(){
@@ -53,6 +54,9 @@ void VolumeController::setUp(){
 }
 
 void VolumeController::update(){
+
+  Serial.println(_volumen_alcanzado);
+
   //Actualización del PID
   _entrada_pid = (*_balanzaPointer).get_volumen(1, 1);
   updateLast10Volumes();
@@ -65,7 +69,6 @@ void VolumeController::update(){
   float valor_actual = _entrada_pid;
 
   if(abs(valor_actual-_valor_pasado) < 20 && !_volumen_alcanzado){
-
 
     if(abs(_entrada_pid - _referencia_pid) < 0.1 || (_entrada_pid - _referencia_pid) > 0){
       _volumen_alcanzado = true;
