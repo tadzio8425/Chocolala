@@ -281,8 +281,8 @@ export default function Main({navigation}) {
       <View style={[{ flex: 1 }, styles.modal]}>
         <Text style={{fontSize:20, fontWeight:"bold", marginTop:20}}>Velocidad de mezcla</Text>
         
-        <View style={{flex:1, justifyContent:"center", marginTop:30, alignItems:"center"}}>
-        <MarkSlider style={{minWidth:"90%"}}
+
+        <MarkSlider style={{minWidth:"90%", minHeight:40, zIndex:1000}}
               step={1}
               max={300}
               marks={marks}
@@ -290,8 +290,7 @@ export default function Main({navigation}) {
           />
 
         <Text style={{marginTop:20}}>{actualRPM} RPM</Text>
-        </View>
-        
+    
         <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
       <Text style={[styles.buttonText]}>Cerrar</Text>
 
