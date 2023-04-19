@@ -14,6 +14,7 @@ class VolumeController
     void updateLast10Volumes();
     void printVolumeMean(int print_interval);
     void setReference(double* refPointer);
+    void resetToggle();
 
   private:
     double _Kp, _Ki, _Kd;

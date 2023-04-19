@@ -69,6 +69,7 @@ void VolumeController::update(){
 
     if(abs(_entrada_pid - _referencia_pid) < 0.1 || (_entrada_pid - _referencia_pid) > 0){
       _volumen_alcanzado = true;
+      resetToggle();
     }
 
     if(true){
@@ -118,4 +119,8 @@ if(_timer_print >= print_interval){
   _timer_print = millis() - _ref_print; 
 }
 
+
+void VolumeController::resetToggle(){
+  _toggle = false;
+}
 
