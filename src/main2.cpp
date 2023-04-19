@@ -106,6 +106,7 @@ void getRPM(){
     valorEncoder = digitalRead(ENCODER);
     double upRPM = motorCount(valorEncoder, 5000);
     if(upRPM != 0){
+          count_control += 1;
           realRPM = upRPM;
           Serial.println(upRPM);
         }
@@ -236,7 +237,6 @@ void loop(){
 
 
     if(!controlShift){
-      count_control += 1;
       steps = getSteps(desiredRPM, 1, tolerance);
       runSteps(steps);
     }
