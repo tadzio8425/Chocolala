@@ -21,6 +21,7 @@
 
 HardwareSerial SerialPort(2); // use UART2
 
+int control_val = 0;
 
 //Vector de pasos
 std::vector<double> steps;
@@ -71,31 +72,35 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS3, ms3Val);
 }
 
-float RPMToDelay(int rpm){
+float RPMToDelay(int rpm, int controlVal){
+
+  float result = 0;
 
   if(rpm > 150){
     setMicrostep(LOW, LOW, LOW);
-    return  -1391*log(rpm) + 8912.1;
+    result = -1391*log(rpm) + 8912.1;
   }
   else if(rpm > 75){
     setMicrostep(HIGH, LOW, LOW);
-    return  152215*pow(rpm,-1.004);
+    result =  152215*pow(rpm,-1.004);
   }
   else if(rpm > 35.7){
     setMicrostep(LOW, HIGH, LOW);
-    return 79504*pow(rpm,-1.017);
+    result = 79504*pow(rpm,-1.017);
   }
   else if(rpm > 19){
     setMicrostep(HIGH, HIGH, LOW);
-    return 40254*pow(rpm, -1.024);
+    result = 40254*pow(rpm, -1.024);
   }
   else if(rpm > 0){
     setMicrostep(HIGH, HIGH, HIGH);
-    return 18595*pow(rpm,-1);
+    result = 18595*pow(rpm,-1);
   }
   else{
     return -1;
   }
+
+  return result + control_val;
 
 
 }
@@ -265,9 +270,17 @@ void setup(){
 
 void loop(){
 
-  int del = RPMToDelay(desiredRPM);
+  int del = RPMToDelay(desiredRPM, control_val);
+
   if(del != -1){
     microPulse(del); 
+  }
+
+  if(desiredRPM - realRPM > 0){
+    control_val -= 10;
+  }
+  else if(desiredRPM - realRPM < 0){
+    control_val += 10;
   }
  
 }
