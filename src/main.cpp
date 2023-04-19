@@ -152,6 +152,7 @@ void loop() {
     *waterFillPointer = false;
     motoBomba.set_speed(0);
     *referenciaPointer = 0;
+    desiredRPM = 0;
     Serial.println("Stop!");
 
     *stopPointer = false;
