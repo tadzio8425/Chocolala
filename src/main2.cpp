@@ -72,7 +72,32 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
 }
 
 float RPMToDelay(int rpm){
-  return -30128*log(rpm) + 132731;
+
+  if(rpm > 150){
+    setMicrostep(LOW, LOW, LOW);
+    return  -1391*log(rpm) + 8912.1;
+  }
+  else if(rpm > 75){
+    setMicrostep(HIGH, LOW, LOW);
+    return -30128*log(rpm) + 132731;
+  }
+  else if(rpm > 35.7){
+    setMicrostep(LOW, HIGH, LOW);
+    return -30128*log(rpm) + 132731;
+  }
+  else if(rpm > 19){
+    setMicrostep(HIGH, HIGH, LOW);
+    return -30128*log(rpm) + 132731;
+  }
+  else if(rpm > 0){
+    setMicrostep(HIGH, HIGH, HIGH);
+    return -30128*log(rpm) + 132731;
+  }
+  else{
+    return -1;
+  }
+
+
 }
 
 
@@ -239,27 +264,8 @@ void setup(){
 }
 
 void loop(){
-
-
-    if(!controlShift){
-      steps = getSteps(desiredRPM, 1, tolerance);
-      runSteps(steps);
-    }
-    else{
-
-      int del = RPMToDelay(desiredRPM);
-      Serial.println(del);
-      microPulse(del);
-    }
-
-    if(count_control > 3){
-      if(abs(desiredRPM - realRPM) > 2){
-        controlShift = true;
-      }
-    }
-
-
-
-
-
+  int del = RPMToDelay(desiredRPM);
+  if(del != -1){
+    microPulse(del);  
+  }
 }
