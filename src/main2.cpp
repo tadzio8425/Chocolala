@@ -144,7 +144,7 @@ void getRPM(){
           control_val -= 10;
         }
         else{
-          control_val -= 2;
+          control_val -= 3;
         }
         
       }
@@ -153,7 +153,7 @@ void getRPM(){
            control_val += 10;
         }
         else{
-          control_val += 2;
+          control_val += 3;
         }
        
       }
