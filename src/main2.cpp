@@ -79,11 +79,11 @@ float RPMToDelay(int rpm){
   }
   else if(rpm > 75){
     setMicrostep(HIGH, LOW, LOW);
-    return  200.0*(rpm) + 800.0;
+    return  152215*pow(rpm,-1.004);
   }
   else if(rpm > 35.7){
     setMicrostep(LOW, HIGH, LOW);
-    return -1462*log(rpm) + 7248.9;
+    return 79504*pow(rpm,-1.017);
   }
   else if(rpm > 19){
     setMicrostep(HIGH, HIGH, LOW);
