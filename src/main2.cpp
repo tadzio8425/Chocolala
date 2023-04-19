@@ -158,11 +158,11 @@ void getRPM(){
        
       }
 
-      if(desiredRPM - realRPM > 1){
+      if(desiredRPM - realRPM == 1){
           control_val -= 1;
       }
 
-      if(desiredRPM - realRPM < -1){
+      if(desiredRPM - realRPM == -1){
           control_val += 1;
         }
 
