@@ -151,6 +151,7 @@ export default function Main({navigation}) {
   const putRPM = (value) =>{
 
     actualRPM = value;
+    setSliderValue(value);
 
     fetchWithTimeout(`${ESP32IP}/rpm`, {
       method: 'PUT',
@@ -280,15 +281,17 @@ export default function Main({navigation}) {
       <View style={[{ flex: 1 }, styles.modal]}>
         <Text style={{fontSize:20, fontWeight:"bold", marginTop:20}}>Velocidad de mezcla</Text>
         
-        <View style={{flex:1, justifyContent:"center", marginTop:30}}>
+        <View style={{flex:1, justifyContent:"center", marginTop:30, alignItems:"center"}}>
         <MarkSlider style={{minWidth:"90%"}}
               step={1}
               max={300}
               marks={marks}
-              onAfterChange={value => putRPM(value)}
+              onChange={value => putRPM(value)}
           />
+
+        <Text style={{marginTop:20}}>{actualRPM} RPM</Text>
         </View>
-        <Text>{actualRPM} RPM</Text>
+        
         <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
       <Text style={[styles.buttonText]}>Cerrar</Text>
 
