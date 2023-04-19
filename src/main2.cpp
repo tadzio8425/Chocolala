@@ -239,7 +239,7 @@ void receiveEvent(int numBytes) {
   while (Wire.available() >= sizeof(value)) {
     Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
 
-    if (value != desiredRPM) {
+    if (value != prevRPM) {
       prevRPM = desiredRPM;
       desiredRPM = value;
       control_val = 0;
