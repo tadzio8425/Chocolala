@@ -135,8 +135,7 @@ void getRPM(){
     valorEncoder = digitalRead(ENCODER);
     double upRPM = motorCount(valorEncoder, 5000);
     if(upRPM != 0){
-          count_control += 1;
-          realRPM = upRPM;
+      count_control += 1;
 
       if(desiredRPM - realRPM > 0){
 
@@ -166,6 +165,7 @@ void getRPM(){
           control_val -= 1;
         }
 
+      realRPM = upRPM;
 
       Serial.println(upRPM);
   }
