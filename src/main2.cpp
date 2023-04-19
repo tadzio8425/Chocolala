@@ -41,6 +41,8 @@ std::vector<double> steps;
 //Pin digital otra ESP32
 #define espMasterDir 14
 
+bool controlShift = false;
+
 //Variables necesarias
 double realRPM;
 int valorEncoder = 0;
@@ -61,6 +63,8 @@ auto rng = std::default_random_engine {};
 
 double FULL_STEP = 1;
 
+int count_control = 0;
+
 void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS1, ms1Val);
   digitalWrite(MS2, ms2Val);
@@ -68,7 +72,7 @@ void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
 }
 
 float RPMToDelay(int rpm){
-  return -31.73*log(rpm) + 136.38;
+  return -30128*log(rpm) + 132731;
 }
 
 
@@ -111,6 +115,13 @@ void motorPulse(int del){
     getRPM();
     digitalWrite(STEP, HIGH);
     delay(del);
+    digitalWrite(STEP, LOW);
+  }
+
+void microPulse(int del){
+    getRPM();
+    digitalWrite(STEP, HIGH);
+    delayMicroseconds(del);
     digitalWrite(STEP, LOW);
   }
 
@@ -222,7 +233,25 @@ void setup(){
 }
 
 void loop(){
-    steps = getSteps(desiredRPM, 1, tolerance);
 
-    runSteps(steps);
+
+    if(!controlShift){
+      count_control += 1;
+      steps = getSteps(desiredRPM, 1, tolerance);
+      runSteps(steps);
+    }
+    else{
+      microPulse(RPMToDelay(desiredRPM));
+    }
+
+    if(count_control > 3){
+      if(abs(desiredRPM - realRPM) > 2){
+        controlShift = true;
+      }
+    }
+
+
+
+
+
 }
