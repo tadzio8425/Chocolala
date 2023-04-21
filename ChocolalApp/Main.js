@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Pressable, Alert, Text, TouchableOpacity, handlePress} from 'react-native';
+import { StyleSheet, View, Image, Pressable, Alert, Text, TouchableOpacity, handlePress, TextInput} from 'react-native';
 import { useCallback, useState, useEffect, componentDidMount} from 'react';
 import AppLoading from "expo-app-loading";
 import useFonts from './hooks/useFonts';
@@ -27,7 +27,7 @@ const marks = [
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-let actualRPM;
+let actualRPM = 0;
 
 var setteable_reference = 0;
 
@@ -151,7 +151,7 @@ export default function Main({navigation}) {
   const putRPM = (value) =>{
 
     actualRPM = value;
-    setSliderValue(value);
+
 
     fetchWithTimeout(`${ESP32IP}/rpm`, {
       method: 'PUT',
@@ -286,12 +286,17 @@ export default function Main({navigation}) {
               step={1}
               max={300}
               marks={marks}
-              onChange={value => putRPM(value)}
+              onChange={value => {putRPM(value), setSliderValue(value)}}
           />
-
-        <Text style={{marginTop:20}}>{actualRPM} RPM</Text>
+        <TextInput
+        style = {{backgroundColor:"#BD8E79",  color:"black", width:80, textAlign:"center", fontWeight:"bold", borderRadius:20, height:40}}
+        placeholder= {`${actualRPM}  RPM`}
+        keyboardType="numbers-and-punctuation"
+        onChangeText={text => {setSliderValue(text), putRPM(text)}}
+        value={`${sliderValue}`}
+        />
     
-        <Pressable style={[styles.pressedButton, {width:100}]}  onPressOut = {() => {toggleModal()}}>
+        <Pressable style={[styles.pressedButton, {width:100,height:40, borderRadius:10}]}  onPressOut = {() => {toggleModal()}}>
       <Text style={[styles.buttonText]}>Cerrar</Text>
 
     </Pressable>
