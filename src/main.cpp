@@ -164,5 +164,4 @@ void loop() {
   Wire.beginTransmission(8); // Address of slave ESP32 = 8
   Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); // Send integer value to slave
   Wire.endTransmission(); // End transmission
-  delay(100);
 }

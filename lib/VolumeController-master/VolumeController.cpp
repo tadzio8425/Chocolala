@@ -35,15 +35,15 @@ void VolumeController::setUp(){
 
 
   if(_referencia_pid<250){
-    _Kp_prueba=15;
+    _Kp_prueba=30;
   } 
-  else if(_referencia_pid<350){
-    _Kp_prueba=20;
-  }
-  else{
+  else if(_referencia_pid<300){
     _Kp_prueba=10;
   }
-  (*_myPIDPointer).SetTunings(_Kp_prueba,0.1,(1.5/100)*_referencia_pid);
+  else{
+    _Kp_prueba=6;
+  }
+  (*_myPIDPointer).SetTunings(_Kp_prueba,0.05,(2/100)*_referencia_pid);
   
 
   (*_myPIDPointer).SetMode(AUTOMATIC);
