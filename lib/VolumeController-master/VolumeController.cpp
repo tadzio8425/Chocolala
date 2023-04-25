@@ -34,16 +34,28 @@ void VolumeController::setUp(){
   _entrada_pid = (*_balanzaPointer).get_volumen(1, 10);
 
 
-  if(_referencia_pid<250){
-    _Kp_prueba=30;
+  if(_referencia_pid - _entrada_pid<100){
+    _Kp_prueba=29;
   } 
-  else if(_referencia_pid<300){
-    _Kp_prueba=10;
+  else if(_referencia_pid - _entrada_pid<150){
+    _Kp_prueba=28.5;
+  } 
+  else if(_referencia_pid - _entrada_pid <200){
+    _Kp_prueba=28;
+  } 
+  else if(_referencia_pid - _entrada_pid <250){
+    _Kp_prueba=26;
+  } 
+  else if(_referencia_pid - _entrada_pid <275){
+    _Kp_prueba=27;
   }
   else{
-    _Kp_prueba=6;
+    _Kp_prueba=1;
   }
-  (*_myPIDPointer).SetTunings(_Kp_prueba,0.05,(2/100)*_referencia_pid);
+
+  _Kp_prueba = -0.000095*pow(_referencia_pid - _entrada_pid, 2) + 0.014530*(_referencia_pid - _entrada_pid) + 28.438516;
+
+  (*_myPIDPointer).SetTunings(_Kp_prueba,-0.000046*(_referencia_pid - _entrada_pid) + 0.048286,(2/100)*(_referencia_pid- _entrada_pid));
   
 
   (*_myPIDPointer).SetMode(AUTOMATIC);
