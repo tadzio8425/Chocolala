@@ -7,7 +7,6 @@
 #include <VolumeController.h>
 #include <Wire.h>
 #include <ChocolalaREST.h>
-
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>

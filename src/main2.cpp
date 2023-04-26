@@ -1,7 +1,15 @@
 //Librerias
 #include <Arduino.h>
+#include <FirebaseT.h>
+#include <Balanza.h>
+#include <MotoBomba.h>
+#include <PID_v1.h>
+#include <VolumeController.h>
 #include <Wire.h>
-#include <iostream>
+#include <ChocolalaREST.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
 
 //Pines de control del motor
 #define DIR 26
