@@ -169,4 +169,6 @@ void loop() {
   Wire.requestFrom(8, 1);
   // Se lee el valor retornado por el esclavo
   int realRPM = Wire.read();
+
+  Serial.println(realRPM);
 }
