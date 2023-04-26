@@ -196,4 +196,8 @@ namespace ChocolalaREST{
   void linkRPM(int* rpmPointer){
     _rpmPointer = rpmPointer;
   }
+
+  void linkRealRPM(int* realRPMPointer){
+    _realRPMPoiner = realRPMPointer;
+  }
 }

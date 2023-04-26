@@ -69,6 +69,8 @@ int desiredRPM = 0;
 int* realRpmPointer;
 int realRPM = 0; // Variable to hold incoming integer valu
 
+int value = 0;
+
 void setup() {
 
   Wire.begin(21, 22); // SDA pin = GPIO 21, SCL pin = GPIO 22
@@ -80,6 +82,7 @@ void setup() {
   calibrarPointer = &defaultCalibrar;
   stopPointer = &defaultStop;
   rpmPointer = &desiredRPM;
+  realRpmPointer = &realRPM;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -108,8 +111,7 @@ void setup() {
   ChocolalaREST::linkStop((stopPointer));
   ChocolalaREST::linkControladorVol((controladorVolPointer));
   ChocolalaREST::linkRPM((rpmPointer));
-  ChocolalaREST::linkRPM((realRpmPointer));
-
+  ChocolalaREST::linkRealRPM((realRpmPointer));
 
 
   //Vincular el API REST con el servidor WiFi
@@ -172,7 +174,6 @@ void loop() {
   Wire.endTransmission(); // End transmission
 
   //Se solicita el RPM Real
-  int value;
   Wire.requestFrom(8, sizeof(value));
   unsigned long startMillis = millis();
   while (Wire.available() < sizeof(value)) {
