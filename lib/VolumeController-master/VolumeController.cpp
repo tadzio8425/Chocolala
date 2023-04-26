@@ -55,7 +55,7 @@ void VolumeController::setUp(){
 
   _Kp_prueba = -0.000095*pow(_referencia_pid - _entrada_pid, 2) + 0.014530*(_referencia_pid - _entrada_pid) + 28.438516;
 
-  (*_myPIDPointer).SetTunings(_Kp_prueba,-0.000046*(_referencia_pid - _entrada_pid) + 0.048286,(2/100)*(_referencia_pid- _entrada_pid));
+  (*_myPIDPointer).SetTunings(_Kp_prueba,-0.000057*(_referencia_pid - _entrada_pid) + 0.052857,(2/100)*(_referencia_pid- _entrada_pid));
   
 
   (*_myPIDPointer).SetMode(AUTOMATIC);

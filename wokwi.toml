@@ -5,5 +5,5 @@ firmware = ".pio/build/esp32dev/firmware.bin"
 
 # Forward http://localhost:8180 to port 80 on the simulated ESP32:
 [[net.forward]]
-from = "157.253.47.96:8181"
+from = "192.168.1.32:8181"
 to = "target:80"

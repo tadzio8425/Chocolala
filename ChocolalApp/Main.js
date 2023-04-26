@@ -12,6 +12,7 @@ import Modal from "react-native-modal";
 import Slider from '@react-native-community/slider';
 import { height } from '@mui/system';
 import MarkSlider from 'react-native-mark-slider';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
  
 
 const marks = [
@@ -67,6 +68,12 @@ export default function Main({navigation}) {
   const [visibleCali, setVisibleCali] = useState(false);
   const [visibleStop, setVisibleStop] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [okDisabled, setOkDisabled] = useState(true);
+  const [remainingTime, setRemainingTime] = useState(10);
+
+  useEffect(() => {
+    setOkDisabled(remainingTime > 0);
+  }, [remainingTime]);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -261,12 +268,26 @@ export default function Main({navigation}) {
 
 
     <Dialog.Container visible={visibleCali}>
-      <Dialog.Title>Calibrar</Dialog.Title>
-      <Dialog.Description>
-            !Se ha calibrado exitosamente la balanza!
-      </Dialog.Description>
-      <Dialog.Button label="OK" onPress={handleCalOk}/>
-    </Dialog.Container>
+  <Dialog.Title>Calibrar</Dialog.Title>
+  <Dialog.Description>
+    Se está calibrando la balanza...
+  </Dialog.Description>
+  <View style={{ alignItems: 'center' }}>
+    <CountdownCircleTimer
+      isPlaying
+      duration={10}
+      size = {120}
+      colors={['#3a6f8a', '#3a9099', '#32b3a1','#1fd9a7', '#56f0a0', "#99ffa2", "#6ce4c4"]}
+      colorsTime={[10,9,7,5,4,2,0]}
+      onComplete={() => {setRemainingTime(0), handleCalOk()}}>
+      {({ remainingTime }) => {
+          setRemainingTime(remainingTime);
+          return <Text>{remainingTime}</Text>;
+        }}
+    </CountdownCircleTimer>
+  </View>
+</Dialog.Container>
+
 
     <Dialog.Container visible={visibleStop}>
       <Dialog.Title>Stop</Dialog.Title>
