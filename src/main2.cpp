@@ -1,71 +1,42 @@
 //Librerias
-#include <FirebaseT.h>
-#include <Balanza.h>
-#include <MotoBomba.h>
-#include <PID_v1.h>
-#include <VolumeController.h>
+#include <Arduino.h>
 #include <Wire.h>
-
-#include <ChocolalaREST.h>
-
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WebServer.h>
-
 #include <iostream>
-#include <vector>
-#include <map>
-#include <utility>
-#include <algorithm>
-#include <random>
 
-HardwareSerial SerialPort(2); // use UART2
-
-int control_val = 0;
-
-//Vector de pasos
-std::vector<double> steps;
-
-//Variables - Pin Motor Stepper
+//Pines de control del motor
 #define DIR 26
 #define STEP 32
-#define ENCODER 13
 
-//HARDWIRED A GND - NO CONECTAR!
+//Pins de MicroStepping
 #define MS1 26
 #define MS2 27
 #define MS3 14
 
+//Pin del encoder
+#define ENCODER 13
+
 //Pin analogo otra ESP32
 #define espMaster 33
 
-//Pin digital otra ESP32
+//Pin digital otra espMasterDir
 #define espMasterDir 14
-
-bool controlShift = false;
 
 //Variables necesarias
 int realRPM;
 int valorEncoder = 0;
-double tolerance = 0.001;
 double time_difference;
 
-//Timer del contador de encoder
+//Variables del encoder
 double initialEncoderTime;
 bool toggleEncoderTimer = false;
 int prevEncoderValue = 1;
 double encoder_counter = 0;
 
-double* rpmPointer;
 double desiredRPM = 0;
-double prevRPM = 0; // Variable to hold previous value of desiredRPM
-char stringRPM[4]; 
-
-auto rng = std::default_random_engine {};
-
-double FULL_STEP = 1;
+double prevRPM = 0; 
 
 int count_control = 0;
+int control_val = 0;
 
 void setMicrostep(int ms1Val, int ms2Val, int ms3Val){
   digitalWrite(MS1, ms1Val);
@@ -166,8 +137,6 @@ void getRPM(){
         }
 
       realRPM = upRPM;
-
-      //Serial.println(upRPM);
   }
 }
 
@@ -183,7 +152,6 @@ void microPulse(int del){
     if(del < 0){
       del = 0;
     }
-
     getRPM();
     digitalWrite(STEP, HIGH);
     delayMicroseconds(del);
@@ -191,76 +159,10 @@ void microPulse(int del){
   }
 
 
-void smartPulse(float step){
-      if(step >= 1.0){
-        setMicrostep(LOW, LOW, LOW);
-        //Serial.println("FULL");
-        motorPulse(1);
-      }
-      else if(step >= 0.5){
-        setMicrostep(HIGH, LOW, LOW);
-        //Serial.println("HALF");
-        motorPulse(1);
-      }
-      else if(step >= 0.25){
-        setMicrostep(LOW, HIGH, LOW);
-        //Serial.println("QUARTER");
-        motorPulse(1);
-      }
-      else if(step >= 0.125){
-        setMicrostep(HIGH, HIGH, LOW);
-        //Serial.println("EIGHT");
-        motorPulse(1);
-      }
-      else if(step >= 0.0625){
-        setMicrostep(HIGH, HIGH, HIGH);
-        //Serial.println("SIXTEENTH");
-        motorPulse(1);
-      }
-      else if(step >= 0){
-        //Serial.println("DEAD");
-        delay(1);
-      }
-
-}
-
-std::vector<double> getSteps(float RPM, float stepWindow, float tolerancia) {
-
-    float desiredStep = (RPM*360.0)/(1.8*60.0*1000.0);
-
-    std::vector<double> responseSteps = {};
-
-  	std::vector<double> microsteps = {1, 0.5, 0.25, 0.125, 0.0625, 0};
-
-    for(int i = 0; i < stepWindow; i++){
-      for(double step: microsteps){
-        if((float) step/stepWindow <= desiredStep){
-          responseSteps.push_back(step);
-          desiredStep -= (float)step/stepWindow;
-          break;
-        }
-      }
-    }
-
-    if(desiredStep > tolerancia && stepWindow <= 29){
-      return getSteps(RPM, stepWindow+1, tolerancia);}
-
-    return responseSteps;
-}
-
-
-void runSteps(std::vector<double> stepList){
-
-    for(double step: stepList){
-      smartPulse(step);
-      //Serial.println(step);
-    }
-}
-
 void receiveEvent(int numBytes) {
-  int value = 0; // Variable to hold incoming integer value
+  int value = 0;
   while (Wire.available() >= sizeof(value)) {
-    Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
+    Wire.readBytes((uint8_t*)&value, sizeof(value));
 
     if (value != prevRPM) {
       prevRPM = desiredRPM;
@@ -270,16 +172,14 @@ void receiveEvent(int numBytes) {
 }
 
 void requestEvent() {
-  // send the value to the master
-  Wire.write((uint8_t*)&realRPM, sizeof(realRPM)); // Read incoming integer value
+  Wire.write((uint8_t*)&realRPM, sizeof(realRPM));
 }
 
-//a
 void setup(){
   Serial.begin(115200);
 
-  Wire.begin(8); // Address of this ESP32 = 8
-  Wire.onReceive(receiveEvent); // Register receive event
+  Wire.begin(8);
+  Wire.onReceive(receiveEvent); 
   Wire.onRequest(requestEvent);
 
   pinMode(espMaster, INPUT);
@@ -294,14 +194,6 @@ void setup(){
   pinMode(ENCODER, INPUT);
   digitalWrite(DIR,HIGH);
 
-
-  steps = getSteps(desiredRPM, 1, tolerance);
-
-  int controlIndex = steps.size() - 1;
-  bool performControl = false;
-
-  std::shuffle(std::begin(steps), std::end(steps), rng);
-  
   initialEncoderTime = millis();
 }
 

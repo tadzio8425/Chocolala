@@ -21,8 +21,6 @@ using namespace ChocolalaREST;
 //Variable - Pin PWM Bomba
 int pump_PWM = 14;
 
-HardwareSerial SerialPort(2);
-
 //Variable - calibración
 int pendiente = 627.643083;
 double* referenciaPointer; //Valor deseado en mL
@@ -54,13 +52,6 @@ VolumeController controladorVolumen(balanzaPointer, motoBombaPointer);
 VolumeController* controladorVolPointer = &controladorVolumen;
 
 FirebaseT iotHandler;
-
-TaskHandle_t motorTask;
-
-std::vector<float> microStep_list = {0.0625, 0.125, 0.25, 0.5, 1};
-
-
-bool pulseToggle = false;
 
 //RPM DESEADO (Pasar valor a la otra ESP32)
 int* rpmPointer;
@@ -137,8 +128,6 @@ void setup() {
 
 
 void loop() {
-
-
   //¿Calibrar manualmente?
   if(*calibrarPointer){
     balanza.calibrar(pendiente);
@@ -166,23 +155,26 @@ void loop() {
     *stopPointer = false;
   }
 
-  //controladorVolumen.printVolumeMean(2000);
+  //Se revisan las posibles peticiones REST del cliente
   (iotHandler.getServerPointer())->handleClient(); 
 
-  Wire.beginTransmission(8); // Address of slave ESP32 = 8
-  Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); // Send integer value to slave
-  Wire.endTransmission(); // End transmission
+
+  //Envía el RPM deseado a la segunda ESP32 (slave)
+  Wire.beginTransmission(8); 
+  Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); 
+  Wire.endTransmission();
 
   //Se solicita el RPM Real
   Wire.requestFrom(8, sizeof(value));
   unsigned long startMillis = millis();
   while (Wire.available() < sizeof(value)) {
-    if (millis() - startMillis > 100) { // timeout after 100ms
+    if (millis() - startMillis > 100) {
       break;
     }
   }
   if (Wire.available() == sizeof(value)) {
-    Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
+    Wire.readBytes((uint8_t*)&value, sizeof(value)); 
     *realRpmPointer = value;
   }
+
 }
