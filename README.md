@@ -4,5 +4,9 @@
 
 ### The IOT Chocolate Pot:
 
+- Electronic instrumentation system for a reactor that prepares "hot" chocolate. Includes:
+  - Continous weight and temperature measurement
+  - Automatic liquid pouring
+  - Controlled mixing speed
 - Backend developed using the Arduino Framework and an ESP32 development board.
 - Frontend mobile app developed using the Expo Framework and React-Native.
