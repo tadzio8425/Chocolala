@@ -28,6 +28,8 @@ namespace ChocolalaREST{
   bool* _calibratePointer;
   bool* _stopPointer;
   int* _rpmPointer;
+  int* _realRPMPoiner;
+
   VolumeController* _controllerVolPointer;
 
   void add_json_object(char *tag, float value, char *unit) {
@@ -67,6 +69,12 @@ namespace ChocolalaREST{
     (*_serverPointer).send(200, "application/json", buffer);
   }
 
+    void GETRealRPM(){
+    Serial.println("Get realRPM");
+    create_json("realRPM", (*_realRPMPoiner), "RPM");
+    (*_serverPointer).send(200, "application/json", buffer);
+  }
+
   void GETAll(){
     jsonDocument.clear();
     add_json_object("reference", (*_referencePointer), "mL");
@@ -74,6 +82,7 @@ namespace ChocolalaREST{
     add_json_object("volume", (*_volumePointer), "mL"); 
     add_json_object("weight", (*_weightPointer), "g");
     add_json_object("desiredRPM", (*_rpmPointer), " RPM");
+    add_json_object("realRPM", (*_realRPMPoiner), " RPM");
     serializeJson(jsonDocument, buffer); 
     (*_serverPointer).send(200, "application/json", buffer);
   }

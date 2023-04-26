@@ -66,6 +66,7 @@ bool pulseToggle = false;
 int* rpmPointer;
 int desiredRPM = 0;
 
+int* realRpmPointer;
 int realRPM = 0; // Variable to hold incoming integer valu
 
 void setup() {
@@ -107,6 +108,8 @@ void setup() {
   ChocolalaREST::linkStop((stopPointer));
   ChocolalaREST::linkControladorVol((controladorVolPointer));
   ChocolalaREST::linkRPM((rpmPointer));
+  ChocolalaREST::linkRPM((realRpmPointer));
+
 
 
   //Vincular el API REST con el servidor WiFi
@@ -116,6 +119,7 @@ void setup() {
   iotHandler.addGETtoWeb("/weight", ChocolalaREST::GETWeight);
   iotHandler.addGETtoWeb("/reference", ChocolalaREST::GETReference);
   iotHandler.addGETtoWeb("/waterFill", ChocolalaREST::GETWaterFill);
+  iotHandler.addPUTtoWeb("/realRpm", ChocolalaREST::GETRealRPM);
   iotHandler.addGETtoWeb("/", ChocolalaREST::GETAll);
 
   //PUT
@@ -168,16 +172,16 @@ void loop() {
   Wire.endTransmission(); // End transmission
 
   //Se solicita el RPM Real
-  Wire.requestFrom(8, sizeof(realRPM));
+  int value;
+  Wire.requestFrom(8, sizeof(value));
   unsigned long startMillis = millis();
-  while (Wire.available() < sizeof(realRPM)) {
+  while (Wire.available() < sizeof(value)) {
     if (millis() - startMillis > 100) { // timeout after 100ms
-      Serial.println("Timeout");
       break;
     }
   }
-  if (Wire.available() == sizeof(realRPM)) {
-    Wire.readBytes((uint8_t*)&realRPM, sizeof(realRPM)); // Read incoming integer value
-    Serial.println(realRPM);
+  if (Wire.available() == sizeof(value)) {
+    Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
+    realRpmPointer* = value;
   }
 }
