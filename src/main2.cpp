@@ -45,7 +45,7 @@ std::vector<double> steps;
 bool controlShift = false;
 
 //Variables necesarias
-double realRPM;
+int realRPM;
 int valorEncoder = 0;
 double tolerance = 0.001;
 double time_difference;
