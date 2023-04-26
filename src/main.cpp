@@ -182,6 +182,6 @@ void loop() {
   }
   if (Wire.available() == sizeof(value)) {
     Wire.readBytes((uint8_t*)&value, sizeof(value)); // Read incoming integer value
-    realRpmPointer* = value;
+    *realRpmPointer = value;
   }
 }
