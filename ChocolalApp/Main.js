@@ -263,7 +263,7 @@ export default function Main({navigation}) {
       <Dialog.Description>
           Ingrese el valor a dosificar en mL:
         </Dialog.Description>
-      <DialogInput keyboardType="numeric" onChangeText={ (inputText) => {setteable_reference = inputText.replace(",",".")} }></DialogInput>
+      <DialogInput style={{color:'black'}} keyboardType="numeric" onChangeText={ (inputText) => {setteable_reference = inputText.replace(",",".")} }></DialogInput>
       <Dialog.Button label="Cancel" onPress={handleRefCancel}/>
         <Dialog.Button label="OK" onPress={handleRefOk}/>
     </Dialog.Container>
