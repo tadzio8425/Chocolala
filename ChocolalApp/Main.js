@@ -171,6 +171,8 @@ export default function Main({navigation}) {
   });
   }
 
+
+  const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState({"value":0});
   const [referenceJSON, setReference] = useState({"value":0});
   const [realRPMJSON, setRealRPMJSON] = useState({"value":0});
@@ -327,7 +329,7 @@ export default function Main({navigation}) {
 
 
       <View>
-        <Text style={{color:"grey"}}>{realRPMJSON["value"].toFixed(0) + " RPM" }</Text>
+        <Text style={{color:"grey"}}>{realRPMJSON["value"].toFixed(0) + " RPM"}</Text>
       </View>
 
       </View>
