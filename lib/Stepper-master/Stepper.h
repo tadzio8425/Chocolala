@@ -47,7 +47,6 @@ class Stepper{
         double _initialEncoderTime;
         int _prevEncoderValue = 1;
         double _encoder_counter = 0;
-        double _time_difference;
         int _count_control = 0;
 };
 
