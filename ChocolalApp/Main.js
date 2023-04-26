@@ -269,7 +269,7 @@ export default function Main({navigation}) {
     </Dialog.Container>
 
 
-    <Dialog.Container visible={visibleCali}>
+  <Dialog.Container visible={visibleCali} contentStyle={{paddingBottom: 20}}>
   <Dialog.Title>Calibrar</Dialog.Title>
   <Dialog.Description>
     Se está calibrando la balanza...
@@ -312,9 +312,9 @@ export default function Main({navigation}) {
               onChange={value => {putRPM(value), setSliderValue(value)}}
           />
         <View style={{backgroundColor:"#BD8E79", width:80, borderRadius:20, height:40, flexWrap:"wrap",
-        justifyContent:'center', alignContent:"center", }}>
+        justifyContent:'center', alignContent:"center", alignItems:"center"}}>
           <TextInput
-          style = {{color:"black", textAlign:"center", fontWeight:"bold", marginRight:2}}
+          style = {{color:"black", fontWeight:"bold", marginRight:2}}
           placeholder= {`${actualRPM}`}
           keyboardType="numbers-and-punctuation"
           onChangeText={text => {setSliderValue(text), putRPM(text)}}
