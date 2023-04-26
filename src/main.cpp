@@ -165,10 +165,9 @@ void loop() {
   Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); // Send integer value to slave
   Wire.endTransmission(); // End transmission
 
-  delay(100);
-
   //Se solicita el RPM Real
   Wire.requestFrom(8, 1);
+  delay(100);
 
   // Se lee el valor retornado por el esclavo
   int realRPM;
