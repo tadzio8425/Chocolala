@@ -80,7 +80,7 @@ void setup() {
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
-    iotHandler.setWiFi("Chocolala", "chocolele", true);
+    iotHandler.setWiFi("Chocolala", "chocolele", false);
     //iotHandler.setFirebase("AIzaSyAiaVAvazH57Fce9ZsE9Cm06BxBMsoJXXw", "https://chocolala-e8384-default-rtdb.firebaseio.com/");
     iotHandler.setWebServer(80);
     ChocolalaREST::linkServer(iotHandler.getServerPointer());
@@ -164,4 +164,9 @@ void loop() {
   Wire.beginTransmission(8); // Address of slave ESP32 = 8
   Wire.write((uint8_t*)&desiredRPM, sizeof(desiredRPM)); // Send integer value to slave
   Wire.endTransmission(); // End transmission
+
+  //Se solicita el RPM Real
+  Wire.requestFrom(8, 1);
+  // Se lee el valor retornado por el esclavo
+  int realRPM = Wire.read();
 }
