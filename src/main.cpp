@@ -68,18 +68,9 @@ int desiredRPM = 0;
 
 int realRPM = 0; // Variable to hold incoming integer valu
 
-void recieveEvent(int numBytes){
-  while (Wire.available() >= sizeof(realRPM)) {
-    
-    Wire.readBytes((uint8_t*)&realRPM, sizeof(realRPM)); // Read incoming integer value}
-  }
-  delay(100);
-}
-
 void setup() {
 
   Wire.begin(21, 22); // SDA pin = GPIO 21, SCL pin = GPIO 22
-  Wire.onReceive(recieveEvent);
 
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
@@ -177,7 +168,16 @@ void loop() {
   Wire.endTransmission(); // End transmission
 
   //Se solicita el RPM Real
-  Wire.requestFrom(8, 1);
-
-  Serial.println(realRPM);
+  Wire.requestFrom(8, sizeof(realRPM));
+  unsigned long startMillis = millis();
+  while (Wire.available() < sizeof(realRPM)) {
+    if (millis() - startMillis > 100) { // timeout after 100ms
+      Serial.println("Timeout");
+      break;
+    }
+  }
+  if (Wire.available() == sizeof(realRPM)) {
+    Wire.readBytes((uint8_t*)&realRPM, sizeof(realRPM)); // Read incoming integer value
+    Serial.println(realRPM);
+  }
 }

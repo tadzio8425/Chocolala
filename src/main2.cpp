@@ -167,7 +167,7 @@ void getRPM(){
 
       realRPM = upRPM;
 
-      Serial.println(upRPM);
+      //Serial.println(upRPM);
   }
 }
 
