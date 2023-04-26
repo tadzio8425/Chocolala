@@ -267,7 +267,11 @@ void receiveEvent(int numBytes) {
       desiredRPM = value;
       control_val = 0;}
   }
+}
 
+void requestEvent() {
+  // send the value to the master
+  Wire.write((uint8_t*)&realRPM, sizeof(realRPM)); // Read incoming integer value
 }
 
 //a
@@ -276,6 +280,7 @@ void setup(){
 
   Wire.begin(8); // Address of this ESP32 = 8
   Wire.onReceive(receiveEvent); // Register receive event
+  Wire.onRequest(requestEvent);
 
   pinMode(espMaster, INPUT);
 
