@@ -4,7 +4,7 @@
 
 class Stepper{
     public:
-        Stepper(int DIR, int STEP, int MS1, int MS2, int MS3, int ENCODER){}
+        Stepper(int DIR, int STEP, int MS1, int MS2, int MS3, int ENCODER);
 
         void setUp();
         void runToRPM();
