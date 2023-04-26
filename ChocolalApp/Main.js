@@ -171,10 +171,9 @@ export default function Main({navigation}) {
   });
   }
 
-
-  const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState({"value":0});
   const [referenceJSON, setReference] = useState({"value":0});
+  const [realRPMJSON, setRealRPMJSON] = useState({"value":0});
 
   const loadData = useCallback(async () => {
     try {
@@ -183,6 +182,7 @@ export default function Main({navigation}) {
       setData(dataJSON);
       setWeight(dataJSON[3]);
       setReference(dataJSON[0]);
+      setRealRPMJSON(dataJSON[5]);
     } catch (error) {
       console.log(error);
     }
@@ -309,20 +309,29 @@ export default function Main({navigation}) {
               marks={marks}
               onChange={value => {putRPM(value), setSliderValue(value)}}
           />
-        <TextInput
-        style = {{backgroundColor:"#BD8E79",  color:"black", width:80, textAlign:"center", fontWeight:"bold", borderRadius:20, height:40}}
-        placeholder= {`${actualRPM}  RPM`}
-        keyboardType="numbers-and-punctuation"
-        onChangeText={text => {setSliderValue(text), putRPM(text)}}
-        value={`${sliderValue}`}
-        />
-    
-        <Pressable style={[styles.pressedButton, {width:100,height:40, borderRadius:10}]}  onPressOut = {() => {toggleModal()}}>
-      <Text style={[styles.buttonText]}>Cerrar</Text>
+        <View style={{backgroundColor:"#BD8E79", width:80, borderRadius:20, height:40, flexWrap:"wrap",
+        justifyContent:'center', alignContent:"center", }}>
+          <TextInput
+          style = {{color:"black", textAlign:"center", fontWeight:"bold", marginRight:2}}
+          placeholder= {`${actualRPM}`}
+          keyboardType="numbers-and-punctuation"
+          onChangeText={text => {setSliderValue(text), putRPM(text)}}
+          value={`${sliderValue}`}
+          />
+          <Text style={{ marginLeft:2}}>RPM</Text>
+        </View>
+      
+      <Pressable style={[styles.pressedButton, {width:100,height:40, borderRadius:10, marginBottom:30, marginTop:40}]}  onPressOut = {() => {toggleModal()}}>
+        <Text style={[styles.buttonText]}>Cerrar</Text>
+      </Pressable>
 
-    </Pressable>
+
+      <View>
+        <Text style={{color:"grey"}}>{realRPMJSON["value"].toFixed(0) + " RPM" }</Text>
+      </View>
 
       </View>
+
     </Modal>
 
 
