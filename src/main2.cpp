@@ -13,13 +13,13 @@
 #include <Stepper.h>
 
 //Pines de control del motor
-#define DIR 26
-#define STEP 32
+#define DIR 32
+#define STEP 33
 
 //Pins de MicroStepping
-#define MS1 26
-#define MS2 27
-#define MS3 14
+#define MS1 5
+#define MS2 18
+#define MS3 19
 
 //Pin del encoder
 #define ENCODER 13

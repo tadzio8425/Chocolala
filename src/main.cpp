@@ -18,7 +18,7 @@ using namespace ChocolalaREST;
 #define CLK  27
 
 //Variable - Pin PWM Bomba
-int pump_PWM = 14;
+int pump_PWM = 33;
 
 //Variable - calibración
 int pendiente = 627.643083;

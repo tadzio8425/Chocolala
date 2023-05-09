@@ -46,7 +46,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.6
+          "min_clearance": 1.2
         }
       },
       "diff_pair_dimensions": [
@@ -107,7 +107,6 @@
         "courtyards_overlap|203976403|66470401|14281d5d-ecc6-454b-9bf8-f920a6a25496|21a21fb4-04a6-40be-92a0-1734fa07a1a2",
         "hole_clearance|131927600|95148400|8e289a00-2f37-4437-b94c-f973b721058e|52517702-40a1-441f-b04f-6bd24c61948e",
         "hole_clearance|133451600|103428800|8e289a00-2f37-4437-b94c-f973b721058e|52517702-40a1-441f-b04f-6bd24c61948e",
-        "invalid_outline|163633822|85351000|b8dc4ff0-9199-43b8-add0-f93e8644468c|00000000-0000-0000-0000-000000000000",
         "lib_footprint_issues|109455500|82296000|7f0938bb-ca39-4216-9c21-028d82325047|00000000-0000-0000-0000-000000000000",
         "lib_footprint_issues|149860000|67564000|6f9fb31f-a146-49b7-8387-d79d22cc35a1|00000000-0000-0000-0000-000000000000",
         "lib_footprint_issues|165201600|82296000|6b02d434-c443-42fb-83f2-33be4b358607|00000000-0000-0000-0000-000000000000",
