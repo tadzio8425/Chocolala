@@ -174,6 +174,7 @@ export default function Main({navigation}) {
 
   const [dataJSON, setData] = useState(true);
   const [weightJSON, setWeight] = useState({"value":0});
+  const [temperatureJSON, setTemperature] = useState({"value":0});
   const [referenceJSON, setReference] = useState({"value":0});
   const [realRPMJSON, setRealRPMJSON] = useState({"value":0});
 
@@ -185,6 +186,7 @@ export default function Main({navigation}) {
       setWeight(dataJSON[3]);
       setReference(dataJSON[0]);
       setRealRPMJSON(dataJSON[5]);
+      setTemperature(dataJSON[6]);
     } catch (error) {
       console.log(error);
     }
@@ -232,10 +234,8 @@ export default function Main({navigation}) {
         <Text style={styles.variableText}>Peso</Text>
         <TextBox text={weightJSON["value"].toFixed(2)} units={weightJSON["unit"]}></TextBox>
         <Text style={[styles.variableText, {marginLeft: "5%"}]}>Temperatura</Text>
-        <TextBox text="yyy" units="°C"></TextBox>
+        <TextBox text={temperatureJSON["value"].toFixed(2)} units="°C"></TextBox>
       </View>
-
-      
 
       <View style={[styles.img, styles.chocoContainer]}>
       <TouchableOpacity onPress={putCalibrate}>
