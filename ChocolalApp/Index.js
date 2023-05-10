@@ -4,7 +4,7 @@ import Dialog from "react-native-dialog";
 import DialogInput from 'react-native-dialog/lib/Input';
 
 
-export let ESP32IP = 'http://192.168.1.35:8181';
+export let ESP32IP = 'http://192.168.1.1';
 
 
 export default function Index({navigation}){
