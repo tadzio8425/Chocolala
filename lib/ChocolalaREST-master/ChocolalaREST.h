@@ -29,6 +29,7 @@ namespace ChocolalaREST{
   bool* _stopPointer;
   int* _rpmPointer;
   int* _realRPMPoiner;
+  double* _temperaturePointer;
 
   VolumeController* _controllerVolPointer;
 
@@ -75,6 +76,12 @@ namespace ChocolalaREST{
     (*_serverPointer).send(200, "application/json", buffer);
   }
 
+    void GETTemperature(){
+    Serial.println("Get temperature");
+    create_json("temperature", (*_temperaturePointer), "C");
+    (*_serverPointer).send(200, "application/json", buffer);
+  }
+
   void GETAll(){
     jsonDocument.clear();
     add_json_object("reference", (*_referencePointer), "mL");
@@ -83,6 +90,7 @@ namespace ChocolalaREST{
     add_json_object("weight", (*_weightPointer), "g");
     add_json_object("desiredRPM", (*_rpmPointer), " RPM");
     add_json_object("realRPM", (*_realRPMPoiner), " RPM");
+    add_json_object("temperature", (*_temperaturePointer), " C");
     serializeJson(jsonDocument, buffer); 
     (*_serverPointer).send(200, "application/json", buffer);
   }
@@ -199,5 +207,9 @@ namespace ChocolalaREST{
 
   void linkRealRPM(int* realRPMPointer){
     _realRPMPoiner = realRPMPointer;
+  }
+
+  void linkTemperature(double* temperaturePointer){
+    _temperaturePointer = temperaturePointer;
   }
 }

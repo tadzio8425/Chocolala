@@ -24,6 +24,9 @@ using namespace ChocolalaREST;
 //Variable - Pin PWM Bomba
 int pump_PWM = 33;
 
+//Variable - Pin OneWire para el sensor de temperatura
+#define ONE_WIRE_BUS 32
+
 //Variable - calibración
 int pendiente = 627.643083;
 double* referenciaPointer; //Valor deseado en mL
@@ -56,12 +59,20 @@ VolumeController* controladorVolPointer = &controladorVolumen;
 
 FirebaseT iotHandler;
 
+OneWire oneWire(ONE_WIRE_BUS);	
+
+// Conexion al sensor de temperatura con la libreria DallasTemperature
+DallasTemperature sensors(&oneWire);
+
 //RPM DESEADO (Pasar valor a la otra ESP32)
 int* rpmPointer;
 int desiredRPM = 0;
 
 int* realRpmPointer;
 int realRPM = 0; // Variable to hold incoming integer valu
+
+double* temperaturePointer;
+double defaultTemp = 0;
 
 int value = 0;
 
@@ -77,6 +88,7 @@ void setup() {
   stopPointer = &defaultStop;
   rpmPointer = &desiredRPM;
   realRpmPointer = &realRPM;
+  temperaturePointer = &defaultTemp;
 
   //Modo wireless (WiFi + Firebase)
   if(wireless_mode){
@@ -106,6 +118,7 @@ void setup() {
   ChocolalaREST::linkControladorVol((controladorVolPointer));
   ChocolalaREST::linkRPM((rpmPointer));
   ChocolalaREST::linkRealRPM((realRpmPointer));
+  ChocolalaREST::linkTemperature((temperaturePointer));
 
 
   //Vincular el API REST con el servidor WiFi
@@ -116,6 +129,7 @@ void setup() {
   iotHandler.addGETtoWeb("/reference", ChocolalaREST::GETReference);
   iotHandler.addGETtoWeb("/waterFill", ChocolalaREST::GETWaterFill);
   iotHandler.addPUTtoWeb("/realRpm", ChocolalaREST::GETRealRPM);
+  iotHandler.addPUTtoWeb("/temperature", ChocolalaREST::GETTemperature);
   iotHandler.addGETtoWeb("/", ChocolalaREST::GETAll);
 
   //PUT
@@ -131,6 +145,11 @@ void setup() {
 
 
 void loop() {
+
+  //Medición de temperatura
+  sensors.requestTemperatures(); 
+  *temperaturePointer = sensors.getTempCByIndex(0);
+
   //¿Calibrar manualmente?
   if(*calibrarPointer){
     balanza.calibrar(pendiente);
