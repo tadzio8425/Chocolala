@@ -4,8 +4,8 @@
 #include <VolumeController.h>
 
 // JSON data buffer
-StaticJsonDocument<500> jsonDocument;
-char buffer[500];
+StaticJsonDocument<1000> jsonDocument;
+char buffer[1000];
 
 
 //Funciones de manejo JSON Auxiliares
@@ -29,7 +29,7 @@ namespace ChocolalaREST{
   bool* _stopPointer;
   int* _rpmPointer;
   int* _realRPMPoiner;
-  double* _temperaturePointer;
+  float* _temperaturePointer;
 
   VolumeController* _controllerVolPointer;
 
@@ -209,7 +209,7 @@ namespace ChocolalaREST{
     _realRPMPoiner = realRPMPointer;
   }
 
-  void linkTemperature(double* temperaturePointer){
+  void linkTemperature(float* temperaturePointer){
     _temperaturePointer = temperaturePointer;
   }
 }

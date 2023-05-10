@@ -71,14 +71,15 @@ int desiredRPM = 0;
 int* realRpmPointer;
 int realRPM = 0; // Variable to hold incoming integer valu
 
-double* temperaturePointer;
-double defaultTemp = 0;
+float* temperaturePointer;
+float defaultTemp = 0;
 
 int value = 0;
 
 void setup() {
 
   Wire.begin(21, 22); // SDA pin = GPIO 21, SCL pin = GPIO 22
+  sensors.begin(); //Inicio sensores OneWire
 
   //Baudiaje de la comunicación serial
   Serial.begin(115200);
