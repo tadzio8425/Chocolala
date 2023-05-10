@@ -11,6 +11,10 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+
 using namespace ChocolalaREST;
 
 //Variables - Pines Balanza
