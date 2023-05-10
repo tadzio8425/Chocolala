@@ -18,12 +18,6 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.tadzio8425.ChocolalApp"
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/chocolalApp_logo.png"
-      },
-      "package": "com.tadzio8425.ChocolalApp"
-    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
