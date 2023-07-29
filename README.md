@@ -10,6 +10,16 @@
   - Controlled mixing speed
 - Backend developed using the Arduino Framework and an ESP32 development board.
 - Frontend mobile app developed using the Expo Framework and React-Native.
+- Developed in the *Universidad de Los Andes* for the class of *Instrumentación Electrónica (IELE-3206)*
+
+## Developed by: 
+<ul>
+  <li>Juan Sebastián Ortega (https://github.com/tadzio8425)</li>
+  <li>Nicolás Correal (https://github.com/Correaln47)</li>
+  <li>Maria Alejandra Moreno (https://github.com/marialemor)</li>
+  <li>Francisco Santamaría (f.santamaria@uniandes.edu.co)</li>
+</ul>
+
 
 ## Frontend - App preview
 | Index page | Main page |
