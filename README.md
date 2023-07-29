@@ -10,6 +10,8 @@
   - Controlled mixing speed
 - Backend developed using the Arduino Framework and an ESP32 development board.
 - Frontend mobile app developed using the Expo Framework and React-Native.
+- Further documentation (in Spanish): [Documentación Chocolala](https://github.com/tadzio8425/Chocolala/files/12207769/Instrumentacion__Datasheet_Balanza.pdf)
+
 - Developed in the *Universidad de Los Andes* for the class of *Instrumentación Electrónica (IELE-3206)*
 
 ## Developed by: 
@@ -37,9 +39,16 @@
 | --- | --- |
 |<img src="https://github.com/tadzio8425/Chocolala/assets/78126968/38e62e73-ac06-4bfc-97c6-a7f080093dc6" width="500" />|<img src="https://github.com/tadzio8425/Chocolala/assets/78126968/609e0be7-3372-456a-a45b-a2b6723ee2d2"  width="500"/>|
 
-
-
 | Prototype|
 | --- |
 |   <img src="https://github.com/tadzio8425/Chocolala/assets/78126968/8b8e66c2-c5fe-4dca-9d76-0ee1bb0ddd50" width="600"/>|
+
+## Demo
+
+
+https://github.com/tadzio8425/Chocolala/assets/78126968/3fff56c4-ae32-456e-9e00-969c29b892ba
+
+
+
+
 
