@@ -10,3 +10,6 @@
   - Controlled mixing speed
 - Backend developed using the Arduino Framework and an ESP32 development board.
 - Frontend mobile app developed using the Expo Framework and React-Native.
+
+## Frontend
+![inicioChocolala](https://github.com/tadzio8425/Chocolala/assets/78126968/5d67af84-6d45-458d-a086-fabe1994e44b | width=100)
