@@ -12,4 +12,7 @@
 - Frontend mobile app developed using the Expo Framework and React-Native.
 
 ## Frontend
-![inicioChocolala](https://github.com/tadzio8425/Chocolala/assets/78126968/5d67af84-6d45-458d-a086-fabe1994e44b | width=100)
+<figure>
+<img src="https://github.com/tadzio8425/Chocolala/assets/78126968/5d67af84-6d45-458d-a086-fabe1994e44b" width="300"/>
+  <figcaption>This is my caption text.</figcaption>
+</figure>
